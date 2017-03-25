@@ -1,15 +1,41 @@
 package astahxmlparser.xmlreader;
 
-import astahxmlparser.umldatastructure;
-import javax.xml.parsers;
-
-public static Class XmlReader
+public class XmlReader
 {
   public static UmlModel ReadModel(String input)
   {
-    File file = new File(input);
-    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    DocumentBuilder builder = dbf.newDocumentBuilder();
-    Document xmlDoc = builder.parse(file);
+    Document doc = AcquireDocument(input);
+  }
+
+  private Document AcquireDocument(String input)
+  {
+    DocumentBuilderFactory dbf = null;
+    DocumentBuilder builder = null;
+    Document doc = null;
+
+    try
+    {
+      factory = DocumentBuilderFactory.newInstance();
+      builder = factory.newDocumentBuilder();
+    }
+    catch (ParserConfigurationException e)
+    {
+      e.printStackTrace();
+    }
+
+    try
+    {
+      doc = builder.parse(new InputSource(input));
+    }
+    catch (SAXException e)
+    {
+      e.printStackTrace();
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+    }
+
+    return doc;
   }
 }

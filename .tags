@@ -89,3 +89,6 @@ end1Aggregation	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structur
 end2Aggregation	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^	private UmlAggregation end2Aggregation;$/;"	field	line:10	class:UmlAssociation	file:
 astah-xml-parser	/home/mintpc/Desktop/Projects/astah-xml-parser/README.md	/^# astah-xml-parser$/;"	function	line:1
 astahxmlparser.xmlreader	/home/mintpc/Desktop/Projects/astah-xml-parser/src/XmlReader/XmlReader.java	/^package astahxmlparser.xmlreader;$/;"	package	line:1
+XmlReader	/home/mintpc/Desktop/Projects/astah-xml-parser/src/XmlReader/XmlReader.java	/^public class XmlReader$/;"	class	line:3
+ReadModel	/home/mintpc/Desktop/Projects/astah-xml-parser/src/XmlReader/XmlReader.java	/^  public static UmlModel ReadModel(String input)$/;"	method	line:5	class:XmlReader	signature:(String input)
+AcquireDocument	/home/mintpc/Desktop/Projects/astah-xml-parser/src/XmlReader/XmlReader.java	/^  private Document AcquireDocument(String input)$/;"	method	line:10	class:XmlReader	file:	signature:(String input)
