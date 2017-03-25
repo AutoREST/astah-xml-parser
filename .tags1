@@ -4,3 +4,7 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+astahxmlparser.xmlreader	/home/mintpc/Desktop/Projects/astah-xml-parser/src/XmlReader/XmlReader.java	/^package astahxmlparser.xmlreader;$/;"	package	line:1
+XmlReader	/home/mintpc/Desktop/Projects/astah-xml-parser/src/XmlReader/XmlReader.java	/^public class XmlReader$/;"	class	line:16
+ReadModel	/home/mintpc/Desktop/Projects/astah-xml-parser/src/XmlReader/XmlReader.java	/^  public static UmlModel ReadModel(String input)$/;"	method	line:18	class:XmlReader	signature:(String input)
+AcquireDocument	/home/mintpc/Desktop/Projects/astah-xml-parser/src/XmlReader/XmlReader.java	/^  private Document AcquireDocument(String input)$/;"	method	line:23	class:XmlReader	file:	signature:(String input)
