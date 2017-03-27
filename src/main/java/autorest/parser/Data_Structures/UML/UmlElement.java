@@ -1,4 +1,6 @@
-package astahxmlparser.umldatastructure;
+package autorest.astahxmlparser.umldatastructure;
+
+import java.util.List;
 
 public abstract class UmlElement
 {

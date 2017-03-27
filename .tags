@@ -63,7 +63,7 @@ umldatastructure	/home/mintpc/Desktop/Projects/astah-xml-parser/Data_Structures/
 UmlAttribute	/home/mintpc/Desktop/Projects/astah-xml-parser/Data_Structures/UML/UmlAttribute.java	/^public class UmlAttribute extends UmlElement$/;"	class	line:3
 type	/home/mintpc/Desktop/Projects/astah-xml-parser/Data_Structures/UML/UmlAttribute.java	/^	private String type;$/;"	field	line:5	class:UmlAttribute	file:
 multiplicity	/home/mintpc/Desktop/Projects/astah-xml-parser/Data_Structures/UML/UmlAttribute.java	/^	private UmlMultiplicity multiplicity;$/;"	field	line:6	class:UmlAttribute	file:
-astahxmlparser.umldatastructure	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^package astahxmlparser.umldatastructure;$/;"	package	line:1
+autorest.astahxmlparser.umldatastructure	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^package autorest.astahxmlparser.umldatastructure;$/;"	package	line:1
 UmlAssociation	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^public class UmlAssociation extends UmlElement$/;"	class	line:3
 end1Element	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^	private UmlElement end1Element;$/;"	field	line:5	class:UmlAssociation	file:
 end2Element	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^	private UmlElement end2Element;$/;"	field	line:6	class:UmlAssociation	file:
@@ -71,7 +71,7 @@ end1Multiplicity	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structu
 end2Multiplicity	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^	private UmlMultiplicity end2Multiplicity;$/;"	field	line:8	class:UmlAssociation	file:
 end1Aggregation	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^	private UmlAggregation end1Aggregation;$/;"	field	line:9	class:UmlAssociation	file:
 end2Aggregation	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^	private UmlAggregation end2Aggregation;$/;"	field	line:10	class:UmlAssociation	file:
-astahxmlparser.umldatastructure	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^package astahxmlparser.umldatastructure;$/;"	package	line:1
+autorest.astahxmlparser.umldatastructure	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^package autorest.astahxmlparser.umldatastructure;$/;"	package	line:1
 UmlAssociation	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^public class UmlAssociation extends UmlElement$/;"	class	line:3
 end1Element	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^	private UmlElement end1Element;$/;"	field	line:5	class:UmlAssociation	file:
 end2Element	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^	private UmlElement end2Element;$/;"	field	line:6	class:UmlAssociation	file:
@@ -79,7 +79,7 @@ end1Multiplicity	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structu
 end2Multiplicity	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^	private UmlMultiplicity end2Multiplicity;$/;"	field	line:8	class:UmlAssociation	file:
 end1Aggregation	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^	private UmlAggregation end1Aggregation;$/;"	field	line:9	class:UmlAssociation	file:
 end2Aggregation	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^	private UmlAggregation end2Aggregation;$/;"	field	line:10	class:UmlAssociation	file:
-astahxmlparser.umldatastructure	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^package astahxmlparser.umldatastructure;$/;"	package	line:1
+autorest.astahxmlparser.umldatastructure	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^package autorest.astahxmlparser.umldatastructure;$/;"	package	line:1
 UmlAssociation	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^public class UmlAssociation extends UmlElement$/;"	class	line:3
 end1Element	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^	private UmlElement end1Element;$/;"	field	line:5	class:UmlAssociation	file:
 end2Element	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^	private UmlElement end2Element;$/;"	field	line:6	class:UmlAssociation	file:
@@ -88,7 +88,7 @@ end2Multiplicity	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structu
 end1Aggregation	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^	private UmlAggregation end1Aggregation;$/;"	field	line:9	class:UmlAssociation	file:
 end2Aggregation	/home/mintpc/Desktop/Projects/astah-xml-parser/src/Data_Structures/UML/UmlAssociation.java	/^	private UmlAggregation end2Aggregation;$/;"	field	line:10	class:UmlAssociation	file:
 astah-xml-parser	/home/mintpc/Desktop/Projects/astah-xml-parser/README.md	/^# astah-xml-parser$/;"	function	line:1
-astahxmlparser.xmlreader	/home/mintpc/Desktop/Projects/astah-xml-parser/src/XmlReader/XmlReader.java	/^package astahxmlparser.xmlreader;$/;"	package	line:1
+autorest.astahxmlparser.xmlreader	/home/mintpc/Desktop/Projects/astah-xml-parser/src/XmlReader/XmlReader.java	/^package autorest.astahxmlparser.xmlreader;$/;"	package	line:1
 XmlReader	/home/mintpc/Desktop/Projects/astah-xml-parser/src/XmlReader/XmlReader.java	/^public class XmlReader$/;"	class	line:16
 ReadModel	/home/mintpc/Desktop/Projects/astah-xml-parser/src/XmlReader/XmlReader.java	/^  public static UmlModel ReadModel(String input)$/;"	method	line:18	class:XmlReader	signature:(String input)
 AcquireDocument	/home/mintpc/Desktop/Projects/astah-xml-parser/src/XmlReader/XmlReader.java	/^  private Document AcquireDocument(String input)$/;"	method	line:23	class:XmlReader	file:	signature:(String input)

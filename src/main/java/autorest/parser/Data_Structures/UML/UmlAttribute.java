@@ -1,4 +1,4 @@
-package astahxmlparser.umldatastructure;
+package autorest.astahxmlparser.umldatastructure;
 
 public class UmlAttribute extends UmlElement
 {

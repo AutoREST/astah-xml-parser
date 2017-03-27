@@ -1,6 +1,6 @@
-package astahxmlparser.xmlreader;
+package autorest.astahxmlparser.xmlreader;
 
-import astahxmlparser.umldatastructure;
+import autorest.astahxmlparser.umldatastructure.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -18,9 +18,12 @@ public class XmlReader
   public static UmlModel ReadModel(String input)
   {
     Document doc = AcquireDocument(input);
+
+    //TODO
+    return null;
   }
 
-  private Document AcquireDocument(String input)
+  private static Document AcquireDocument(String input)
   {
     DocumentBuilderFactory dbf = null;
     DocumentBuilder builder = null;
@@ -28,8 +31,8 @@ public class XmlReader
 
     try
     {
-      factory = DocumentBuilderFactory.newInstance();
-      builder = factory.newDocumentBuilder();
+      dbf = DocumentBuilderFactory.newInstance();
+      builder = dbf.newDocumentBuilder();
     }
     catch (ParserConfigurationException e)
     {
