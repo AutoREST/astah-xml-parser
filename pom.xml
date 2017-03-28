@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>autorest.parser</groupId>
   <artifactId>astah-xml-parser</artifactId>
-  <version>0.1.1a</version>
+  <version>0.1.2a</version>
   <packaging>jar</packaging>
   <name>Astah XML Reader</name>
   <url>https://github.com/AutoREST/astah-xml-parser</url>
