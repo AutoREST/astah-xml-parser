@@ -109,7 +109,7 @@ public class UmlAssociation extends UmlElement implements Serializable
 	 */
 	public UmlAssociation()
 	{
-		BuiltIt(null, null, null, null, null, null, null, null, null);
+		BuildIt(null, null, null, null, null, null, null, null, null);
 	}
 	/**
 	 * <code>FULLACCESS</code> Constructor of <code>UmlAssociation</code> based on ID.
