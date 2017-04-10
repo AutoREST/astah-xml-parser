@@ -100,6 +100,7 @@ public class UmlAssociation extends UmlElement implements Serializable
 	 }
 
 	// FULLACCESS CONSTRUCTORS
+	//#FULLACCESS
 	/**
 	 * <code>FULLACCESS</code> constructor of <code>UmlAssociation</code>.
 	 * <p>
@@ -153,6 +154,7 @@ public class UmlAssociation extends UmlElement implements Serializable
 	{
 		BuildIt(id, new UmlElement(end1Id), new UmlElement(end2Id), new UmlMultiplicity(1,1), new UmlMultiplicity(1,1), UmlAggregation.association, UmlAggregation.association, UmlNavigability.navigable, UmlNavigability.navigable);
 	}
+	//#END
 	/**
 	 * Method used internally by the constructors to build an object instance.
 	 *
@@ -187,7 +189,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	// GET METHODS
 	/**
 	 * @since 	0.1.1a
+	 //#FULLACCESS
 	 * @return	Deep copy of <code>end1Element</code>
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference of <code>end1Element</code>
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlElement
 	 */
 	public UmlElement getEnd1()
@@ -203,7 +210,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	}
 	/**
 	 * @since 	0.1.1a
+	 //#FULLACCESS
 	 * @return	Deep copy of <code>end2Element</code>
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference of <code>end2Element</code>
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlElement
 	 */
 	public UmlElement getEnd2()
@@ -219,7 +231,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	}
 	/**
 	 * @since 	0.1.1a
+	 //#FULLACCESS
 	 * @return	Deep copy of both <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlElement} objects, in order
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference to both code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlElement} objects, in order
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlElement
 	 */
 	public List<UmlElement> getEnds()
@@ -232,7 +249,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	/**
 	 * @since 	0.1.1a
 	 * @param 	id <code>ID</code> of the desired <code>end</code>
+	 //#FULLACCESS
 	 * @return	Deep copy of corresponding <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlElement} object, if present; null otherwise
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference to the corresponding <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlElement} object, if present; null otherwise
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlElement
 	 */
 	public UmlElement getEndById(String id)
@@ -250,7 +272,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	/**
 	 * @since 	0.1.1a
 	 * @param 	name <code>Name</code> of the desired <code>end</code>
+	 //#FULLACCESS
 	 * @return	Deep copy of corresponding <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlElement} object, if present; null otherwise
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference to the corresponding <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlElement} object, if present; null otherwise
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlElement
 	 */
 	public UmlElement getEndByName(String name)
@@ -267,7 +294,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	}
 	/**
 	 * @since 	0.1.1a
+	 //#FULLACCESS
 	 * @return	Deep copy of <code>end1</code> {@link #autorest.astahxmlparser.umldatastructure.UmlMultiplicity} object
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference to the <code>end1</code> {@link #autorest.astahxmlparser.umldatastructure.UmlMultiplicity} object
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlMultiplicity
 	 */
 	public UmlMultiplicity getMultiplicityEnd1()
@@ -283,7 +315,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	}
 	/**
 	 * @since 	0.1.1a
+	 //#FULLACCESS
 	 * @return	Deep copy of <code>end2</code> {@link #autorest.astahxmlparser.umldatastructure.UmlMultiplicity} object
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference to the <code>end2</code> {@link #autorest.astahxmlparser.umldatastructure.UmlMultiplicity} object
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlMultiplicity
 	 */
 	public UmlMultiplicity getMultiplicityEnd2()
@@ -299,7 +336,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	}
 	/**
 	 * @since 	0.1.1a
+	 //#FULLACCESS
 	 * @return	Deep copy of both <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlMultiplicity} objects, in order
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference to both <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlMultiplicity} objects, in order
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlMultiplicity
 	 */
 	public List<UmlMultiplicity> getMulticities()
@@ -312,7 +354,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	/**
 	 * @since 	0.1.1a
 	 * @param 	id <code>ID</code> of the desired <code>end</code>
+	 //#FULLACCESS
 	 * @return	Deep copy of corresponding <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlMultiplicity} object, if present; null otherwise
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference to the corresponding <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlMultiplicity} object, if present; null otherwise
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlMultiplicity
 	 */
 	public UmlMultiplicity getMultiplicityByEndId(String id)
@@ -330,7 +377,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	/**
 	 * @since 	0.1.1a
 	 * @param 	name <code>Name</code> of the desired <code>end</code>
+	 //#FULLACCESS
 	 * @return	Deep copy of corresponding <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlMultiplicity} object, if present; null otherwise
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference to the corresponding <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlMultiplicity} object, if present; null otherwise
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlMultiplicity
 	 */
 	public UmlMultiplicity getMultiplicityByEndName(String name)
@@ -347,7 +399,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	}
 	/**
 	 * @since 	0.1.1a
+	 //#FULLACCESS
 	 * @return	Deep copy of <code>end1</code> {@link #autorest.astahxmlparser.umldatastructure.UmlAggregation} object
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference to the <code>end1</code> {@link #autorest.astahxmlparser.umldatastructure.UmlAggregation} object
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlAggregation
 	 */
 	public UmlAggregation getAggregationEnd1()
@@ -363,7 +420,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	}
 	/**
 	 * @since 	0.1.1a
+	 //#FULLACCESS
 	 * @return	Deep copy of <code>end2</code> {@link #autorest.astahxmlparser.umldatastructure.UmlAggregation} object
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference to the <code>end2</code> {@link #autorest.astahxmlparser.umldatastructure.UmlAggregation} object
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlAggregation
 	 */
 	public UmlAggregation getAggregationEnd2()
@@ -379,7 +441,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	}
 	/**
 	 * @since 	0.1.1a
+	 //#FULLACCESS
 	 * @return	Deep copy of both <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlAggregation} objects, in order
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference to both <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlAggregation} objects, in order
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlAggregation
 	 */
 	public List<UmlAggregation> getAggregations()
@@ -392,7 +459,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	/**
 	 * @since 	0.1.1a
 	 * @param 	id <code>ID</code> of the desired <code>end</code>
+	 //#FULLACCESS
 	 * @return	Deep copy of corresponding <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlAggregation} object, if present; null otherwise
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference to the corresponding <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlAggregation} object, if present; null otherwise
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlAggregation
 	 */
 	public UmlAggregation getAggregationByEndId(String id)
@@ -410,7 +482,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	/**
 	 * @since 	0.1.1a
 	 * @param 	name <code>Name</code> of the desired <code>end</code>
+	 //#FULLACCESS
 	 * @return	Deep copy of corresponding <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlAggregation} object, if present; null otherwise
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference to the corresponding <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlAggregation} object, if present; null otherwise
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlAggregation
 	 */
 	public UmlAggregation getAggregationByEndName(String name)
@@ -427,7 +504,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	}
 	/**
 	 * @since 	0.1.1a
+	 //#FULLACCESS
 	 * @return	Deep copy of <code>end1</code> {@link #autorest.astahxmlparser.umldatastructure.UmlNavigability} object
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference to the <code>end1</code> {@link #autorest.astahxmlparser.umldatastructure.UmlNavigability} object
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlNavigability
 	 */
 	public UmlNavigability getNavigabilityEnd1()
@@ -443,7 +525,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	}
 	/**
 	 * @since 	0.1.1a
+	 //#FULLACCESS
 	 * @return	Deep copy of <code>end2</code> {@link #autorest.astahxmlparser.umldatastructure.UmlNavigability} object
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference to the <code>end2</code> {@link #autorest.astahxmlparser.umldatastructure.UmlNavigability} object
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlNavigability
 	 */
 	public UmlNavigability getNavigabilityEnd2()
@@ -459,7 +546,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	}
 	/**
 	 * @since 	0.1.1a
+	 //#FULLACCESS
 	 * @return	Deep copy of both <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlNavigability} objects, in order
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference to both <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlNavigability} objects, in order
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlNavigability
 	 */
 	public List<UmlNavigability> getNavigabilities()
@@ -472,7 +564,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	/**
 	 * @since 	0.1.1a
 	 * @param 	id <code>ID</code> of the desired <code>end</code>
+	 //#FULLACCESS
 	 * @return	Deep copy of corresponding <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlNavigability} object, if present; null otherwise
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference to the corresponding <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlNavigability} object, if present; null otherwise
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlNavigability
 	 */
 	public UmlNavigability getNavigabilityByEndId(String id)
@@ -490,7 +587,12 @@ public class UmlAssociation extends UmlElement implements Serializable
 	/**
 	 * @since 	0.1.1a
 	 * @param 	name <code>Name</code> of the desired <code>end</code>
+	 //#FULLACCESS
 	 * @return	Deep copy of corresponding <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlNavigability} object, if present; null otherwise
+	 //#END
+	 //#!FULLACCESS
+	 * @return	Reference to the corresponding <code>end</code> {@link #autorest.astahxmlparser.umldatastructure.UmlNavigability} object, if present; null otherwise
+	 //#END
 	 * @see			autorest.astahxmlparser.umldatastructure.UmlNavigability
 	 */
 	public UmlNavigability getNavigabilityByEndName(String name)
