@@ -1,15 +1,13 @@
 package autorest.astahxmlparser.umldatastructure;
 
-public class UmlTag
+public class UmlType
 {
 	public String id;
 	public String name;
-	public String value;
 
-	public UmlTag()
+	public UmlType()
 	{
 		this.id = "";
 		this.name = "";
-		this.value = "";
 	}
 }

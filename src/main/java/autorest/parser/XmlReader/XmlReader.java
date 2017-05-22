@@ -1,17 +1,10 @@
 package autorest.astahxmlparser.xmlreader;
 
 import autorest.astahxmlparser.umldatastructure.*;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.text.ParseException;
+import java.io.File;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 public class XmlReader
 {
@@ -19,39 +12,26 @@ public class XmlReader
   {
     Document doc = AcquireDocument(input);
 
-    //TODO
-    return null;
+    UmlModel model = new UmlModel();
+    ModelBuilder mb = new ModelBuilder(model, doc);
+    return mb.Build();
   }
 
   private static Document AcquireDocument(String input)
   {
-    DocumentBuilderFactory dbf = null;
-    DocumentBuilder builder = null;
-    Document doc = null;
-
     try
     {
-      dbf = DocumentBuilderFactory.newInstance();
-      builder = dbf.newDocumentBuilder();
+      File file = new File(input);
+      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+      dbf.setNamespaceAware(true);
+      DocumentBuilder db = dbf.newDocumentBuilder();
+      return db.parse(file);
     }
-    catch (ParserConfigurationException e)
+    catch (Exception e)
     {
-      e.printStackTrace();
+	     System.out.println(e.getMessage());
     }
 
-    try
-    {
-      doc = builder.parse(new InputSource(input));
-    }
-    catch (SAXException e)
-    {
-      e.printStackTrace();
-    }
-    catch (IOException e)
-    {
-      e.printStackTrace();
-    }
-
-    return doc;
+    return null;
   }
 }

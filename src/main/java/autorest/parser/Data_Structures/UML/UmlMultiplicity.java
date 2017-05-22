@@ -2,6 +2,12 @@ package autorest.astahxmlparser.umldatastructure;
 
 public class UmlMultiplicity
 {
-	private int minimum;
-	private int maximum;
+	public int minimum;
+	public int maximum;
+
+	public UmlMultiplicity()
+	{
+		this.minimum = 0;
+		this.maximum = 0;
+	}
 }
