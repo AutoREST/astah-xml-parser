@@ -96,6 +96,7 @@ public class ModelWriter
       if(c.parentPackage.name.equals(packageName))
       {
         validClasses.add(c);
+        createId(c);
       }
     }
 
@@ -104,8 +105,37 @@ public class ModelWriter
       if(ac.parentPackage.name.equals(packageName))
       {
         validAssClasses.add(ac);
+        createAssId(ac);
       }
     }
+  }
+
+  // this creates an ID attribute if none is present
+  private void createId(UmlClass c)
+  {
+    for(UmlAttribute t : c.attributes)
+    {
+      for(UmlStereotype st : t.stereotypes)
+      {
+        if(st.name.equals("id"))
+        {
+          return;
+        }
+      }
+    }
+
+    UmlAttribute aux = new UmlAttribute();
+    aux.name = c.name + "_created_identifier";
+    aux.type = "int";
+    UmlStereotype idAux = new UmlStereotype();
+    idAux.name = "id";
+    aux.stereotypes.add(idAux);
+    c.attributes.add(aux);
+  }
+
+  private void createAssId(UmlAssociativeClass c)
+  {
+
   }
 
   // this writes down a single class into the Schema. Associative Classes decorate this method.
@@ -131,6 +161,27 @@ public class ModelWriter
         writeAttribute(t);
         tabs = tabs.substring(0, tabs.length() - 1);
         control = tabs + "}," + System.lineSeparator();
+      }
+
+      // checks for associated attributes
+      for(UmlAssociation ass : model.associations.values())
+      {
+        if(ass.end1.endElement.name.equals(c.name))
+        {
+          if(ass.end2.endAggregation == UmlAggregation.association && ass.end2.endNavigability == UmlNavigability.navigable)
+          {
+            outputStream.write(control);
+            createAssociationAttribute(ass.end2);
+          }
+        }
+        else if(ass.end2.endElement.name.equals(c.name))
+        {
+          if(ass.end1.endAggregation == UmlAggregation.association && ass.end1.endNavigability == UmlNavigability.navigable)
+          {
+            outputStream.write(control);
+            createAssociationAttribute(ass.end1);
+          }
+        }
       }
 
       // close the properties block
@@ -168,7 +219,7 @@ public class ModelWriter
       // check if each attribute is mandatory or optional
       for(UmlAttribute t : c.attributes)
       {
-        if(t.multiplicity.minimum > 0 && t.multiplicity.maximum != 1)
+        if(t.multiplicity.minimum > 0 && (t.multiplicity.maximum > 0 || t.multiplicity.maximum == -1))
         {
           outputStream.write(control + "\"" + t.name + "\"");
           control = ", ";
@@ -180,6 +231,66 @@ public class ModelWriter
       outputStream.write(tabs + "}" + System.lineSeparator());
       // removes the last tab to put it back in line with parent method
       tabs = tabs.substring(0, tabs.length() - 1);
+      // clean things up for the next class
+      nonIdAttributes.clear();
+    }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+    }
+  }
+
+  private void createAssociationAttribute(UmlAssociationEnd ass)
+  {
+    try
+    {
+      // 0..1 or 1..1
+      if((ass.endMultiplicity.minimum == 1 && ass.endMultiplicity.maximum == 1)
+      || (ass.endMultiplicity.minimum == 0 && ass.endMultiplicity.maximum == 1))
+      {
+        for(UmlAttribute t : ass.endElement.attributes)
+        {
+          for(UmlStereotype st : t.stereotypes)
+          {
+            if(st.name.equals("id"))
+            {
+              // this just makes a dummy attribute with the FK for the required and dependencies blocks
+              UmlAttribute aux = new UmlAttribute();
+              aux.name = ass.endElement.name;
+              aux.multiplicity = ass.endMultiplicity;
+              nonIdAttributes.add(aux);
+
+              outputStream.write(tabs + "\"" + ass.endElement.name + "\": {" + System.lineSeparator());
+              outputStream.write(tabs + "\t" + "\"$ref\": \"#/definitions/" + ass.endElement.name + "/properties/" + t.name + "\"" + System.lineSeparator());
+            }
+          }
+        }
+      }
+      // 1..*, * or 0..*
+      else
+      {
+        for(UmlAttribute t : ass.endElement.attributes)
+        {
+          for(UmlStereotype st : t.stereotypes)
+          {
+            if(st.name.equals("id"))
+            {
+              // this just makes a dummy attribute with the FK for the required and dependencies blocks
+              UmlAttribute aux = new UmlAttribute();
+              aux.name = ass.endElement.name;
+              aux.multiplicity = ass.endMultiplicity;
+              nonIdAttributes.add(aux);
+
+              outputStream.write(tabs + "\"" + ass.endElement.name + "s\": {" + System.lineSeparator());
+              tabs += "\t";
+              outputStream.write(tabs + "\"type\": \"array\"" + System.lineSeparator());
+              outputStream.write(tabs + "\"items\": {" + System.lineSeparator());
+              outputStream.write(tabs + "\t" + "\"$ref\": \"#/definitions/" + ass.endElement.name + "/properties/" + t.name + "\"" + System.lineSeparator());
+              outputStream.write(tabs + "}" + System.lineSeparator());
+            }
+          }
+        }
+      }
     }
     catch(Exception e)
     {
@@ -199,13 +310,13 @@ public class ModelWriter
       tabs += "\t";
 
       // normal attribute
-      if(t.multiplicity.maximum <= 1)
+      if(t.multiplicity.maximum == 1 || t.multiplicity.maximum == 0)
       {
         outputStream.write(tabs + "\"type\": " + getType(t));
       }
 
       // array attribute
-      if(t.multiplicity.maximum > 1)
+      if(t.multiplicity.maximum > 1 || t.multiplicity.maximum == -1)
       {
         outputStream.write(tabs + "\"type\": \"array\"" + System.lineSeparator());
         outputStream.write(tabs + "\"items\":{" + System.lineSeparator());
@@ -287,7 +398,6 @@ public class ModelWriter
   // gets the id string for dependencies, and also fills up the nonIdAttributes list
   private String getIdentifier(UmlClass c)
   {
-    nonIdAttributes.clear();
     String identifier = "";
     for(UmlAttribute t : c.attributes)
     {

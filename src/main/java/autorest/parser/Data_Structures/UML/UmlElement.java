@@ -10,6 +10,7 @@ public class UmlElement
 	public UmlPackage parentPackage;
 	public List<UmlStereotype> stereotypes;
 	public List<UmlTag> tags;
+	public List<UmlAttribute> attributes;
 	public UmlElement parent;
 
 	public UmlElement()
@@ -19,6 +20,7 @@ public class UmlElement
 		this.parentPackage = new UmlPackage();
 		this.stereotypes = new ArrayList<UmlStereotype>();
 		this.tags = new ArrayList<UmlTag>();
+		this.attributes = new ArrayList<UmlAttribute>();
 		parent = null;
 	}
 }
