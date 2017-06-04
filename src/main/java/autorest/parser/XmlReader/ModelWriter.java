@@ -69,7 +69,7 @@ public class ModelWriter
         outputStream.write(control);
         // prints classes first
         writeClass(c);
-        control = "}," + System.lineSeparator();
+        control = tabs + "}," + System.lineSeparator();
       }
 
       // just close everything up
@@ -171,7 +171,7 @@ public class ModelWriter
           if(ass.end2.endAggregation == UmlAggregation.association && ass.end2.endNavigability == UmlNavigability.navigable)
           {
             outputStream.write(control);
-            createAssociationAttribute(ass.end2);
+            createAssociationAttribute(ass.end2, c);
           }
         }
         else if(ass.end2.endElement.name.equals(c.name))
@@ -179,7 +179,7 @@ public class ModelWriter
           if(ass.end1.endAggregation == UmlAggregation.association && ass.end1.endNavigability == UmlNavigability.navigable)
           {
             outputStream.write(control);
-            createAssociationAttribute(ass.end1);
+            createAssociationAttribute(ass.end1, c);
           }
         }
       }
@@ -240,7 +240,7 @@ public class ModelWriter
     }
   }
 
-  private void createAssociationAttribute(UmlAssociationEnd ass)
+  private void createAssociationAttribute(UmlAssociationEnd ass, UmlClass c)
   {
     try
     {
@@ -259,6 +259,7 @@ public class ModelWriter
               aux.name = ass.endElement.name;
               aux.multiplicity = ass.endMultiplicity;
               nonIdAttributes.add(aux);
+              c.attributes.add(aux);
 
               outputStream.write(tabs + "\"" + ass.endElement.name + "\": {" + System.lineSeparator());
               outputStream.write(tabs + "\t" + "\"$ref\": \"#/definitions/" + ass.endElement.name + "/properties/" + t.name + "\"" + System.lineSeparator());
@@ -280,13 +281,14 @@ public class ModelWriter
               aux.name = ass.endElement.name;
               aux.multiplicity = ass.endMultiplicity;
               nonIdAttributes.add(aux);
+              c.attributes.add(aux);
 
               outputStream.write(tabs + "\"" + ass.endElement.name + "s\": {" + System.lineSeparator());
               tabs += "\t";
-              outputStream.write(tabs + "\"type\": \"array\"" + System.lineSeparator());
+              outputStream.write(tabs + "\"type\": \"array\"," + System.lineSeparator());
               outputStream.write(tabs + "\"items\": {" + System.lineSeparator());
               outputStream.write(tabs + "\t" + "\"$ref\": \"#/definitions/" + ass.endElement.name + "/properties/" + t.name + "\"" + System.lineSeparator());
-              outputStream.write(tabs + "}" + System.lineSeparator());
+              outputStream.write(tabs + "\t}" + System.lineSeparator());
             }
           }
         }
@@ -401,7 +403,10 @@ public class ModelWriter
     String identifier = "";
     for(UmlAttribute t : c.attributes)
     {
-      nonIdAttributes.add(t);
+      if(!nonIdAttributes.contains(t))
+      {
+        nonIdAttributes.add(t);
+      }
       // too lazy to implement the equals method
       for(UmlStereotype st : t.stereotypes)
       {

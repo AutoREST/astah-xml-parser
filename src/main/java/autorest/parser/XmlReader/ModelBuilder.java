@@ -5,9 +5,9 @@ import java.util.Iterator;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
+//import javax.xml.xpath.XPathConstants;
+//import javax.xml.xpath.XPathExpression;
+//import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -462,6 +462,36 @@ public class ModelBuilder
     UmlAssociationEnd endsy = new UmlAssociationEnd();
     Element elementNodesy = (Element)nodesy;
 
+    // checking if this is an actual End, or a reference to an End
+    if(elementNodesy.hasAttribute("xmi.idref"))
+    {
+      //XPathFactory xpf = XPathFactory.newInstance();
+      //XPath xpath = xpf.newXPath();
+      //String assPath = "//UML:AssociationEnd[@xmi.id=\"" + elementNodesy.getAttribute("xmi.idref") + "\"]";
+      //XPathExpression expr = xpath.compile(assPath);
+
+      //Object myObj = expr.evaluate(doc, XPathConstants.NODESET);
+      //NodeList thingamajig = (NodeList)myObj;
+      //System.out.println("testing " + thingamajig.getLength());
+      //nodesy = thingamajig.item(0);
+      //elementNodesy = (Element)nodesy;
+      //resultChildren = nodesy.getChildNodes();
+
+      NodeList thingamajang = doc.getElementsByTagName("UML:AssociationEnd");
+      for(int i = 0; i < thingamajang.getLength(); i++)
+      {
+        Node noder = thingamajang.item(i);
+        Element noderElement = (Element)noder;
+        if(noderElement.getAttribute("xmi.id").equals(elementNodesy.getAttribute("xmi.idref")))
+        {
+          nodesy = noder;
+          elementNodesy = noderElement;
+          resultChildren = nodesy.getChildNodes();
+          break;
+        }
+      }
+    }
+
     switch(elementNodesy.getAttribute("aggregation"))
     {
       case "aggregate":
@@ -485,18 +515,6 @@ public class ModelBuilder
       case "non navigable":
         endsy.endNavigability = UmlNavigability.nonNavigable;
         break;
-    }
-
-    // checking if this is an actual End, or a reference to an End
-    if(elementNodesy.hasAttribute("xmi.idref"))
-    {
-      XPathFactory xpf = XPathFactory.newInstance();
-      XPath xpath = xpf.newXPath();
-      XPathExpression expr = xpath.compile("//UML:AssociationEnd[@xmi.id=\"" + elementNodesy.getAttribute("xmi.idref") + "\"]");
-
-      nodesy = (Node)expr.evaluate(doc, XPathConstants.NODE);
-      elementNodesy = (Element)nodesy;
-      resultChildren = nodesy.getChildNodes();
     }
 
     for(int i = 0; i < resultChildren.getLength(); i++)
