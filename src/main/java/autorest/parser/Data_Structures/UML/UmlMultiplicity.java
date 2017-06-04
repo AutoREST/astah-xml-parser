@@ -7,7 +7,7 @@ public class UmlMultiplicity
 
 	public UmlMultiplicity()
 	{
-		this.minimum = 0;
-		this.maximum = 0;
+		this.minimum = 1;
+		this.maximum = 1;
 	}
 }

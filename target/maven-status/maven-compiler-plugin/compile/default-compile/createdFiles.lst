@@ -4,6 +4,7 @@ TestApp.class
 autorest/astahxmlparser/umldatastructure/UmlNavigability.class
 autorest/astahxmlparser/umldatastructure/UmlElement.class
 autorest/astahxmlparser/umldatastructure/UmlType.class
+autorest/astahxmlparser/xmlreader/ModelWriter.class
 autorest/astahxmlparser/umldatastructure/UmlModel.class
 autorest/astahxmlparser/xmlreader/XmlReader.class
 autorest/astahxmlparser/umldatastructure/UmlMultiplicity.class

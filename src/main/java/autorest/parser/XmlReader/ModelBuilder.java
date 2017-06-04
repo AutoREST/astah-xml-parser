@@ -41,7 +41,7 @@ public class ModelBuilder
     }
     catch(Exception e)
     {
-      System.out.println("IT BORKED");
+      e.printStackTrace();
     }
 
     return model;
