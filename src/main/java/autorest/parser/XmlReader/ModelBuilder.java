@@ -1,6 +1,13 @@
 package autorest.astahxmlparser.xmlreader;
 
 import autorest.astahxmlparser.umldatastructure.*;
+import java.util.Iterator;
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -8,9 +15,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import javax.xml.namespace.NamespaceContext;
-import java.util.Iterator;
-import javax.xml.XMLConstants;
 
 //THIS CODE IS WRITE-ONLY. DO NOT TRY TO GIVE IT MAINTENANCE, IT IS BAD.
 public class ModelBuilder
@@ -457,6 +461,7 @@ public class ModelBuilder
     NodeList resultChildren = nodesy.getChildNodes();
     UmlAssociationEnd endsy = new UmlAssociationEnd();
     Element elementNodesy = (Element)nodesy;
+
     switch(elementNodesy.getAttribute("aggregation"))
     {
       case "aggregate":
@@ -480,6 +485,18 @@ public class ModelBuilder
       case "non navigable":
         endsy.endNavigability = UmlNavigability.nonNavigable;
         break;
+    }
+
+    // checking if this is an actual End, or a reference to an End
+    if(elementNodesy.hasAttribute("xmi.idref"))
+    {
+      XPathFactory xpf = XPathFactory.newInstance();
+      XPath xpath = xpf.newXPath();
+      XPathExpression expr = xpath.compile("//UML:AssociationEnd[@xmi.id=\"" + elementNodesy.getAttribute("xmi.idref") + "\"]");
+
+      nodesy = (Node)expr.evaluate(doc, XPathConstants.NODE);
+      elementNodesy = (Element)nodesy;
+      resultChildren = nodesy.getChildNodes();
     }
 
     for(int i = 0; i < resultChildren.getLength(); i++)
