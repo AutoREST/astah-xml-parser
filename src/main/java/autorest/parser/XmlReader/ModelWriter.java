@@ -24,6 +24,8 @@ public class ModelWriter
   public List<UmlAssociativeClass> validAssClasses;
   // auxiliary list to hold attributes that need to be printed in the dependencies block
   public List<UmlAttribute> nonIdAttributes;
+  // auxiliary list to hold attributes that need to be printed in the required block
+  public List<UmlAttribute> idAttributes;
 
   // initialize the ModelWriter
   public ModelWriter(UmlModel model, String path, String packageName)
@@ -39,6 +41,7 @@ public class ModelWriter
       validClasses = new ArrayList();
       validAssClasses = new ArrayList();
       nonIdAttributes = new ArrayList();
+      idAttributes = new ArrayList();
     }
     catch(Exception e)
     {
@@ -66,10 +69,13 @@ public class ModelWriter
 
       for(UmlClass c : validClasses)
       {
-        outputStream.write(control);
-        // prints classes first
-        writeClass(c);
-        control = tabs + "}," + System.lineSeparator();
+        if(!isInnerClass(c))
+        {
+          outputStream.write(control);
+          // prints classes first
+          writeClass(c);
+          control = tabs + "}," + System.lineSeparator();
+        }
       }
 
       // just close everything up
@@ -113,6 +119,11 @@ public class ModelWriter
   // this creates an ID attribute if none is present
   private void createId(UmlClass c)
   {
+    if(c.parent != null)
+    {
+      return;
+    }
+
     for(UmlAttribute t : c.attributes)
     {
       for(UmlStereotype st : t.stereotypes)
@@ -138,6 +149,28 @@ public class ModelWriter
 
   }
 
+  private boolean isInnerClass(UmlClass c)
+  {
+    for(UmlAssociation ass : model.associations.values())
+    {
+      if(ass.end1.endElement.name.equals(c.name))
+      {
+        if(ass.end2.endAggregation == UmlAggregation.composition)
+        {
+          return true;
+        }
+      }
+      if(ass.end2.endElement.name.equals(c.name))
+      {
+        if(ass.end1.endAggregation == UmlAggregation.composition)
+        {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   // this writes down a single class into the Schema. Associative Classes decorate this method.
   private void writeClass(UmlClass c)
   {
@@ -153,6 +186,22 @@ public class ModelWriter
       tabs += "\t";
       // auxiliary variable, controls whether it is the first or last item added in a foreach loop
       String control = "";
+
+      // enter parent reference
+      if(c.parent != null)
+      {
+        outputStream.write(tabs + "\"" + c.parent.name + "\" : {" + System.lineSeparator());
+        tabs += "\t";
+        outputStream.write(tabs + "\"$ref\" : \"#/definitions/" + c.parent.name + "\"" + System.lineSeparator());
+        tabs = tabs.substring(0, tabs.length() - 1);
+        control = tabs + "}," + System.lineSeparator();
+
+        // insert dummy attribute
+        UmlAttribute dummyAtt = new UmlAttribute();
+        dummyAtt.name = c.parent.name;
+        dummyAtt.multiplicity.minimum = 0;
+        nonIdAttributes.add(dummyAtt);
+      }
 
       // prints each of the basic attribute definitions
       for(UmlAttribute t : c.attributes)
@@ -173,6 +222,11 @@ public class ModelWriter
             outputStream.write(control);
             createAssociationAttribute(ass.end2, c);
           }
+          if(ass.end2.endAggregation == UmlAggregation.aggregation)
+          {
+            outputStream.write(control);
+            createAggregationAttribute(ass.end2, c);
+          }
         }
         else if(ass.end2.endElement.name.equals(c.name))
         {
@@ -180,6 +234,11 @@ public class ModelWriter
           {
             outputStream.write(control);
             createAssociationAttribute(ass.end1, c);
+          }
+          if(ass.end1.endAggregation == UmlAggregation.aggregation)
+          {
+            outputStream.write(control);
+            createAggregationAttribute(ass.end1, c);
           }
         }
       }
@@ -189,50 +248,59 @@ public class ModelWriter
       tabs = tabs.substring(0, tabs.length() - 1);
       outputStream.write(tabs + "}," + System.lineSeparator());
 
-      // open the dependencies block
-      outputStream.write(tabs + "\"dependencies\": {" + System.lineSeparator());
-      tabs += "\t";
-      control = "";
       // gets the string of the identifier, and also fills up the nonIdAttributes list
       String identifier = getIdentifier(c);
 
-      // prints each dependency line
-      for(UmlAttribute t : nonIdAttributes)
+      if(nonIdAttributes.size() > 0 && identifier != "")
       {
-        // no tabs here, it's a line closure
-        outputStream.write(control);
-        outputStream.write(tabs + "\"" + t.name + "\": [ " + identifier + "]");
-        control = "," + System.lineSeparator();
+        // open the dependencies block
+        outputStream.write(tabs + "\"dependencies\": {" + System.lineSeparator());
+        tabs += "\t";
+        control = "";
+
+        // prints each dependency line
+        for(UmlAttribute t : nonIdAttributes)
+        {
+          // no tabs here, it's a line closure
+          outputStream.write(control);
+          outputStream.write(tabs + "\"" + t.name + "\": [ " + identifier + "]");
+          control = "," + System.lineSeparator();
+        }
+
+        // close the dependencies block. no tabs in the first, line closure.
+        outputStream.write(System.lineSeparator());
+        tabs = tabs.substring(0, tabs.length() - 1);
+        outputStream.write(tabs + "}," + System.lineSeparator());
       }
-
-      // close the dependencies block. no tabs in the first, line closure.
-      outputStream.write(System.lineSeparator());
-      tabs = tabs.substring(0, tabs.length() - 1);
-      outputStream.write(tabs + "}," + System.lineSeparator());
-
-      // open the required block
-      outputStream.write(tabs + "\"required\": {" + System.lineSeparator());
-      // i was too lazy to add a tab for one line
-      outputStream.write(tabs + "\t[ ");
-      control = "";
 
       // check if each attribute is mandatory or optional
       for(UmlAttribute t : c.attributes)
       {
-        if(t.multiplicity.minimum > 0 && (t.multiplicity.maximum > 0 || t.multiplicity.maximum == -1))
+        if(t.multiplicity.minimum > 0 && (t.multiplicity.maximum > 0 || t.multiplicity.maximum == -1) && !idAttributes.contains(t))
+        {
+          idAttributes.add(t);
+        }
+      }
+
+      if(idAttributes.size() > 0)
+      {
+        // open the required block
+        outputStream.write(tabs + "\"required\": [ ");
+        control = "";
+        for(UmlAttribute t : idAttributes)
         {
           outputStream.write(control + "\"" + t.name + "\"");
           control = ", ";
         }
-      }
-      // close line
-      outputStream.write(" ]" + System.lineSeparator());
 
-      outputStream.write(tabs + "}" + System.lineSeparator());
-      // removes the last tab to put it back in line with parent method
+        // close line
+        outputStream.write(" ]" + System.lineSeparator());
+      }
+
       tabs = tabs.substring(0, tabs.length() - 1);
       // clean things up for the next class
       nonIdAttributes.clear();
+      idAttributes.clear();
     }
     catch(Exception e)
     {
@@ -278,7 +346,7 @@ public class ModelWriter
             {
               // this just makes a dummy attribute with the FK for the required and dependencies blocks
               UmlAttribute aux = new UmlAttribute();
-              aux.name = ass.endElement.name;
+              aux.name = ass.endElement.name + "s";
               aux.multiplicity = ass.endMultiplicity;
               nonIdAttributes.add(aux);
               c.attributes.add(aux);
@@ -289,10 +357,36 @@ public class ModelWriter
               outputStream.write(tabs + "\"items\": {" + System.lineSeparator());
               outputStream.write(tabs + "\t" + "\"$ref\": \"#/definitions/" + ass.endElement.name + "/properties/" + t.name + "\"" + System.lineSeparator());
               outputStream.write(tabs + "\t}" + System.lineSeparator());
+              tabs = tabs.substring(0, tabs.length() - 1);
             }
           }
         }
       }
+    }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+    }
+  }
+
+  private void createAggregationAttribute(UmlAssociationEnd ass, UmlClass c)
+  {
+    try
+    {
+      // this just makes a dummy attribute with the FK for the required and dependencies blocks
+      UmlAttribute aux = new UmlAttribute();
+      aux.name = ass.endElement.name + "s";
+      aux.multiplicity = ass.endMultiplicity;
+      nonIdAttributes.add(aux);
+      c.attributes.add(aux);
+
+      outputStream.write(tabs + "\"" + ass.endElement.name + "s\": {" + System.lineSeparator());
+      tabs += "\t";
+      outputStream.write(tabs + "\"type\": \"array\"," + System.lineSeparator());
+      outputStream.write(tabs + "\"items\": {" + System.lineSeparator());
+      outputStream.write(tabs + "\t" + "\"$ref\": \"#/definitions/" + ass.endElement.name + "\"" + System.lineSeparator());
+      outputStream.write(tabs + "\t}" + System.lineSeparator());
+      tabs = tabs.substring(0, tabs.length() - 1);
     }
     catch(Exception e)
     {
@@ -415,8 +509,13 @@ public class ModelWriter
           identifier += "\"" + t.name + "\", ";
           // it adds them all, then removes if it's an id.
           nonIdAttributes.remove(t);
+          idAttributes.add(t);
         }
       }
+    }
+    if(identifier.equals(""))
+    {
+      return identifier;
     }
     // this just removes the comma at the end of the string
     identifier = identifier.substring(0, identifier.length() - 2);
