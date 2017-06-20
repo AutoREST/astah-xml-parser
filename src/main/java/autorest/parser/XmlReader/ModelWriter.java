@@ -153,19 +153,13 @@ public class ModelWriter
   {
     for(UmlAssociation ass : model.associations.values())
     {
-      if(ass.end1.endElement.name.equals(c.name))
+      if(ass.end1.endElement.name.equals(c.name) && ass.end1.endAggregation == UmlAggregation.composition)
       {
-        if(ass.end2.endAggregation == UmlAggregation.composition)
-        {
-          return true;
-        }
+        return true;
       }
-      if(ass.end2.endElement.name.equals(c.name))
+      if(ass.end2.endElement.name.equals(c.name) && ass.end2.endAggregation == UmlAggregation.composition)
       {
-        if(ass.end1.endAggregation == UmlAggregation.composition)
-        {
-          return true;
-        }
+        return true;
       }
     }
     return false;
@@ -227,6 +221,17 @@ public class ModelWriter
             outputStream.write(control);
             createAggregationAttribute(ass.end2, c);
           }
+          if(ass.end2.endAggregation == UmlAggregation.composition)
+          {
+            outputStream.write(control);
+            writeClass((UmlClass)ass.end2.endElement);
+            // this just makes a dummy attribute with the FK for the required and dependencies blocks
+            UmlAttribute aux = new UmlAttribute();
+            aux.name = ass.end2.endElement.name;
+            aux.multiplicity = ass.end2.endMultiplicity;
+            nonIdAttributes.add(aux);
+            c.attributes.add(aux);
+          }
         }
         else if(ass.end2.endElement.name.equals(c.name))
         {
@@ -239,6 +244,17 @@ public class ModelWriter
           {
             outputStream.write(control);
             createAggregationAttribute(ass.end1, c);
+          }
+          if(ass.end1.endAggregation == UmlAggregation.composition)
+          {
+            outputStream.write(control);
+            writeClass((UmlClass)ass.end1.endElement);
+            // this just makes a dummy attribute with the FK for the required and dependencies blocks
+            UmlAttribute aux = new UmlAttribute();
+            aux.name = ass.end1.endElement.name;
+            aux.multiplicity = ass.end1.endMultiplicity;
+            nonIdAttributes.add(aux);
+            c.attributes.add(aux);
           }
         }
       }
