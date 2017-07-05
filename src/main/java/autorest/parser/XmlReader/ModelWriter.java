@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.File;
 import java.lang.System;
+import java.lang.IllegalArgumentException;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -119,6 +120,11 @@ public class ModelWriter
       {
         validAssClasses.add(ac);
       }
+    }
+
+    if(validClasses.size() + validAssClasses.size() == 0)
+    {
+      throw new IllegalArgumentException("ERROR: pacote vazio");
     }
   }
 
@@ -580,11 +586,11 @@ public class ModelWriter
         outputStream.write("," + System.lineSeparator());
         outputStream.write(tabs + "\"maxLength\": 1" + System.lineSeparator());
       }
-      else if(t.type.equals("Date"))
-      {
-        outputStream.write("," + System.lineSeparator());
-        //outputStream.write(tabs + "\"format\": \"date-time\"" + System.lineSeparator());
-      }
+      // else if(t.type.equals("Date"))
+      // {
+      //   outputStream.write("," + System.lineSeparator());
+      //   outputStream.write(tabs + "\"format\": \"date-time\"" + System.lineSeparator());
+      // }
       else
       {
         // it's not a special type so just close the line

@@ -2,6 +2,7 @@ package autorest.astahxmlparser.xmlreader;
 
 import autorest.astahxmlparser.umldatastructure.*;
 import java.io.File;
+import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
@@ -15,6 +16,15 @@ public class XmlReader
     UmlModel model = new UmlModel();
     ModelBuilder mb = new ModelBuilder(model, doc);
     return mb.Build();
+  }
+
+  public static Set<String> AcquirePackages(String input)
+  {
+    Document doc = AcquireDocument(input);
+
+    UmlModel model = new UmlModel();
+    ModelBuilder mb = new ModelBuilder(model, doc);
+    return mb.GetPackages();
   }
 
   private static Document AcquireDocument(String input)

@@ -3,6 +3,7 @@ package autorest.astahxmlparser.xmlreader;
 import autorest.astahxmlparser.umldatastructure.*;
 import autorest.astahxmlparser.CompilerDirectives;
 import java.util.Iterator;
+import java.util.Set;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
@@ -50,6 +51,17 @@ public class ModelBuilder
     }
 
     return model;
+  }
+
+  public Set<String> GetPackages()
+  {
+    try
+    {
+      fillPackages();
+    }
+    catch(Exception e){}
+    Set<String> result = this.model.packages.keySet();
+    return result;
   }
 
   private UmlAccessibility accessLevelCheck(Element toCheck)
