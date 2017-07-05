@@ -124,7 +124,8 @@ public class ModelWriter
 
     if(validClasses.size() + validAssClasses.size() == 0)
     {
-      throw new IllegalArgumentException("ERROR: pacote vazio");
+      System.out.println("ERROR: empty package selected");
+      throw new IllegalArgumentException("ERROR: empty package selected");
     }
   }
 
@@ -532,13 +533,22 @@ public class ModelWriter
       nonIdAttributes.add(aux);
       c.attributes.add(aux);
 
-      outputStream.write(tabs + "\"" + ass.endElement.name + "s\": {" + System.lineSeparator());
-      tabs += "\t";
-      outputStream.write(tabs + "\"type\": \"array\"," + System.lineSeparator());
-      outputStream.write(tabs + "\"items\": {" + System.lineSeparator());
-      outputStream.write(tabs + "\t" + "\"$ref\": \"#/definitions/" + ass.endElement.name + "\"" + System.lineSeparator());
-      outputStream.write(tabs + "\t}" + System.lineSeparator());
-      tabs = tabs.substring(0, tabs.length() - 1);
+      for(UmlAttribute t : ass.endElement.attributes)
+      {
+        for(UmlStereotype st : t.stereotypes)
+        {
+          if(st.name.equals("id"))
+          {
+            outputStream.write(tabs + "\"" + ass.endElement.name + "s\": {" + System.lineSeparator());
+            tabs += "\t";
+            outputStream.write(tabs + "\"type\": \"array\"," + System.lineSeparator());
+            outputStream.write(tabs + "\"items\": {" + System.lineSeparator());
+            outputStream.write(tabs + "\t" + "\"$ref\": \"#/definitions/" + ass.endElement.name + "/properties/" + t.name + "\"" + System.lineSeparator());
+            outputStream.write(tabs + "\t}" + System.lineSeparator());
+            tabs = tabs.substring(0, tabs.length() - 1);
+          }
+        }
+      }
     }
     catch(Exception e)
     {
