@@ -29,10 +29,15 @@ public class TestApp
       try
       {
         Writer outputStream = new FileWriter("packages.txt");
+        System.out.print("[");
+        String control = "";
         for(String s : packages)
         {
           outputStream.write(s + System.lineSeparator());
+          System.out.print(control + "\'" + s + "\'");
+          control = ",";
         }
+        System.out.print("]");
         outputStream.close();
       }
       catch(IOException e)

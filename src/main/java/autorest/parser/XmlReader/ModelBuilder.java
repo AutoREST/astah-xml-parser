@@ -4,6 +4,7 @@ import autorest.astahxmlparser.umldatastructure.*;
 import autorest.astahxmlparser.CompilerDirectives;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.HashSet;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
@@ -65,7 +66,11 @@ public class ModelBuilder
       System.out.println("ERROR: in acquiring the packages");
       e.printStackTrace();
     }
-    Set<String> result = this.model.packages.keySet();
+    Set<String> result = new HashSet();
+    for(UmlPackage p : this.model.packages.values())
+    {
+      result.add(p.name);
+    }
     return result;
   }
 
