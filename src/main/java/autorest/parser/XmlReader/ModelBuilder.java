@@ -47,6 +47,7 @@ public class ModelBuilder
     }
     catch(Exception e)
     {
+      System.out.println("ERROR: in reading the xml");
       e.printStackTrace();
     }
 
@@ -59,7 +60,11 @@ public class ModelBuilder
     {
       fillPackages();
     }
-    catch(Exception e){}
+    catch(Exception e)
+    {
+      System.out.println("ERROR: in acquiring the packages");
+      e.printStackTrace();
+    }
     Set<String> result = this.model.packages.keySet();
     return result;
   }

@@ -98,12 +98,14 @@ public class ModelWriter
     }
     catch(Exception e)
     {
+      System.out.println("ERROR: in building the JSON Schema");
       e.printStackTrace();
     }
   }
 
   // just checks which elements are inside the wanted package and adds them to the lists
   private void selectElements()
+  throws Exception
   {
     for (UmlClass c : model.classes.values())
     {
@@ -124,7 +126,6 @@ public class ModelWriter
 
     if(validClasses.size() + validAssClasses.size() == 0)
     {
-      System.out.println("ERROR: empty package selected");
       throw new IllegalArgumentException("ERROR: empty package selected");
     }
   }
@@ -175,370 +176,322 @@ public class ModelWriter
 
   // this writes down a single class into the Schema. Associative Classes decorate this method.
   private void writeClass(UmlClass c)
+  throws Exception
   {
-    try
+    // these open up the class with the basics
+    outputStream.write(tabs + "\"" + c.name + "\": {" + System.lineSeparator());
+    tabs += "\t";
+
+    outputStream.write(tabs + "\"type\": \"object\"," + System.lineSeparator());
+    outputStream.write(tabs + "\"additionalProperties\": false," + System.lineSeparator());
+    outputStream.write(tabs + "\"properties\": {" + System.lineSeparator());
+    tabs += "\t";
+    // auxiliary variable, controls whether it is the first or last item added in a foreach loop
+    String control = "";
+
+    // enter parent reference
+    if(c.parent != null)
     {
-      // these open up the class with the basics
-      outputStream.write(tabs + "\"" + c.name + "\": {" + System.lineSeparator());
+      outputStream.write(tabs + "\"" + c.parent.name + "\" : {" + System.lineSeparator());
       tabs += "\t";
+      outputStream.write(tabs + "\"$ref\" : \"#/definitions/" + c.parent.name + "\"" + System.lineSeparator());
+      tabs = tabs.substring(0, tabs.length() - 1);
+      control = tabs + "}," + System.lineSeparator();
 
-      outputStream.write(tabs + "\"type\": \"object\"," + System.lineSeparator());
-      outputStream.write(tabs + "\"additionalProperties\": false," + System.lineSeparator());
-      outputStream.write(tabs + "\"properties\": {" + System.lineSeparator());
-      tabs += "\t";
-      // auxiliary variable, controls whether it is the first or last item added in a foreach loop
-      String control = "";
+      // insert dummy attribute
+      UmlAttribute dummyAtt = new UmlAttribute();
+      dummyAtt.name = c.parent.name;
+      dummyAtt.multiplicity.minimum = 0;
+      nonIdAttributes.add(dummyAtt);
+    }
 
-      // enter parent reference
-      if(c.parent != null)
+    // prints each of the basic attribute definitions
+    for(UmlAttribute t : c.attributes)
+    {
+      outputStream.write(control);
+      writeAttribute(t);
+      tabs = tabs.substring(0, tabs.length() - 1);
+      control = tabs + "}," + System.lineSeparator();
+    }
+
+    // checks for associated attributes
+    for(UmlAssociation ass : model.associations.values())
+    {
+      if(ass.end1.endElement.name.equals(c.name))
       {
-        outputStream.write(tabs + "\"" + c.parent.name + "\" : {" + System.lineSeparator());
-        tabs += "\t";
-        outputStream.write(tabs + "\"$ref\" : \"#/definitions/" + c.parent.name + "\"" + System.lineSeparator());
-        tabs = tabs.substring(0, tabs.length() - 1);
-        control = tabs + "}," + System.lineSeparator();
-
-        // insert dummy attribute
-        UmlAttribute dummyAtt = new UmlAttribute();
-        dummyAtt.name = c.parent.name;
-        dummyAtt.multiplicity.minimum = 0;
-        nonIdAttributes.add(dummyAtt);
+        if(ass.end2.endAggregation == UmlAggregation.association && ass.end2.endNavigability == UmlNavigability.navigable)
+        {
+          outputStream.write(control);
+          createAssociationAttribute(ass.end2, c);
+        }
+        if(ass.end2.endAggregation == UmlAggregation.aggregation)
+        {
+          outputStream.write(control);
+          createAggregationAttribute(ass.end2, c);
+        }
+        if(ass.end2.endAggregation == UmlAggregation.composition)
+        {
+          outputStream.write(control);
+          writeClass((UmlClass)ass.end2.endElement);
+          // this just makes a dummy attribute with the FK for the required and dependencies blocks
+          UmlAttribute aux = new UmlAttribute();
+          aux.name = ass.end2.endElement.name;
+          aux.multiplicity = ass.end2.endMultiplicity;
+          nonIdAttributes.add(aux);
+          c.attributes.add(aux);
+        }
       }
-
-      // prints each of the basic attribute definitions
-      for(UmlAttribute t : c.attributes)
+      else if(ass.end2.endElement.name.equals(c.name))
       {
+        if(ass.end1.endAggregation == UmlAggregation.association && ass.end1.endNavigability == UmlNavigability.navigable)
+        {
+          outputStream.write(control);
+          createAssociationAttribute(ass.end1, c);
+        }
+        if(ass.end1.endAggregation == UmlAggregation.aggregation)
+        {
+          outputStream.write(control);
+          createAggregationAttribute(ass.end1, c);
+        }
+        if(ass.end1.endAggregation == UmlAggregation.composition)
+        {
+          outputStream.write(control);
+          writeClass((UmlClass)ass.end1.endElement);
+          // this just makes a dummy attribute with the FK for the required and dependencies blocks
+          UmlAttribute aux = new UmlAttribute();
+          aux.name = ass.end1.endElement.name;
+          aux.multiplicity = ass.end1.endMultiplicity;
+          nonIdAttributes.add(aux);
+          c.attributes.add(aux);
+        }
+      }
+    }
+
+    // close the properties block
+    outputStream.write(tabs + "}" + System.lineSeparator());
+    tabs = tabs.substring(0, tabs.length() - 1);
+    outputStream.write(tabs + "}," + System.lineSeparator());
+
+    // gets the string of the identifier, and also fills up the nonIdAttributes list
+    String identifier = getIdentifier(c);
+
+    if(nonIdAttributes.size() > 0 && identifier != "")
+    {
+      // open the dependencies block
+      outputStream.write(tabs + "\"dependencies\": {" + System.lineSeparator());
+      tabs += "\t";
+      control = "";
+
+      // prints each dependency line
+      for(UmlAttribute t : nonIdAttributes)
+      {
+        // no tabs here, it's a line closure
         outputStream.write(control);
-        writeAttribute(t);
-        tabs = tabs.substring(0, tabs.length() - 1);
-        control = tabs + "}," + System.lineSeparator();
+        outputStream.write(tabs + "\"" + t.name + "\": [ " + identifier + "]");
+        control = "," + System.lineSeparator();
       }
 
-      // checks for associated attributes
-      for(UmlAssociation ass : model.associations.values())
-      {
-        if(ass.end1.endElement.name.equals(c.name))
-        {
-          if(ass.end2.endAggregation == UmlAggregation.association && ass.end2.endNavigability == UmlNavigability.navigable)
-          {
-            outputStream.write(control);
-            createAssociationAttribute(ass.end2, c);
-          }
-          if(ass.end2.endAggregation == UmlAggregation.aggregation)
-          {
-            outputStream.write(control);
-            createAggregationAttribute(ass.end2, c);
-          }
-          if(ass.end2.endAggregation == UmlAggregation.composition)
-          {
-            outputStream.write(control);
-            writeClass((UmlClass)ass.end2.endElement);
-            // this just makes a dummy attribute with the FK for the required and dependencies blocks
-            UmlAttribute aux = new UmlAttribute();
-            aux.name = ass.end2.endElement.name;
-            aux.multiplicity = ass.end2.endMultiplicity;
-            nonIdAttributes.add(aux);
-            c.attributes.add(aux);
-          }
-        }
-        else if(ass.end2.endElement.name.equals(c.name))
-        {
-          if(ass.end1.endAggregation == UmlAggregation.association && ass.end1.endNavigability == UmlNavigability.navigable)
-          {
-            outputStream.write(control);
-            createAssociationAttribute(ass.end1, c);
-          }
-          if(ass.end1.endAggregation == UmlAggregation.aggregation)
-          {
-            outputStream.write(control);
-            createAggregationAttribute(ass.end1, c);
-          }
-          if(ass.end1.endAggregation == UmlAggregation.composition)
-          {
-            outputStream.write(control);
-            writeClass((UmlClass)ass.end1.endElement);
-            // this just makes a dummy attribute with the FK for the required and dependencies blocks
-            UmlAttribute aux = new UmlAttribute();
-            aux.name = ass.end1.endElement.name;
-            aux.multiplicity = ass.end1.endMultiplicity;
-            nonIdAttributes.add(aux);
-            c.attributes.add(aux);
-          }
-        }
-      }
-
-      // close the properties block
-      outputStream.write(tabs + "}" + System.lineSeparator());
+      // close the dependencies block. no tabs in the first, line closure.
+      outputStream.write(System.lineSeparator());
       tabs = tabs.substring(0, tabs.length() - 1);
       outputStream.write(tabs + "}," + System.lineSeparator());
-
-      // gets the string of the identifier, and also fills up the nonIdAttributes list
-      String identifier = getIdentifier(c);
-
-      if(nonIdAttributes.size() > 0 && identifier != "")
-      {
-        // open the dependencies block
-        outputStream.write(tabs + "\"dependencies\": {" + System.lineSeparator());
-        tabs += "\t";
-        control = "";
-
-        // prints each dependency line
-        for(UmlAttribute t : nonIdAttributes)
-        {
-          // no tabs here, it's a line closure
-          outputStream.write(control);
-          outputStream.write(tabs + "\"" + t.name + "\": [ " + identifier + "]");
-          control = "," + System.lineSeparator();
-        }
-
-        // close the dependencies block. no tabs in the first, line closure.
-        outputStream.write(System.lineSeparator());
-        tabs = tabs.substring(0, tabs.length() - 1);
-        outputStream.write(tabs + "}," + System.lineSeparator());
-      }
-
-      // check if each attribute is mandatory or optional
-      for(UmlAttribute t : c.attributes)
-      {
-        if(t.multiplicity.minimum > 0 && (t.multiplicity.maximum > 0 || t.multiplicity.maximum == -1) && !idAttributes.contains(t))
-        {
-          idAttributes.add(t);
-        }
-      }
-
-      if(idAttributes.size() > 0)
-      {
-        // open the required block
-        outputStream.write(tabs + "\"required\": [ ");
-        control = "";
-        for(UmlAttribute t : idAttributes)
-        {
-          outputStream.write(control + "\"" + t.name + "\"");
-          control = ", ";
-        }
-
-        // close line
-        outputStream.write(" ]" + System.lineSeparator());
-      }
-
-      tabs = tabs.substring(0, tabs.length() - 1);
-      // clean things up for the next class
-      nonIdAttributes.clear();
-      idAttributes.clear();
     }
-    catch(Exception e)
+
+    // check if each attribute is mandatory or optional
+    for(UmlAttribute t : c.attributes)
     {
-      e.printStackTrace();
+      if(t.multiplicity.minimum > 0 && (t.multiplicity.maximum > 0 || t.multiplicity.maximum == -1) && !idAttributes.contains(t))
+      {
+        idAttributes.add(t);
+      }
     }
+
+    if(idAttributes.size() > 0)
+    {
+      // open the required block
+      outputStream.write(tabs + "\"required\": [ ");
+      control = "";
+      for(UmlAttribute t : idAttributes)
+      {
+        outputStream.write(control + "\"" + t.name + "\"");
+        control = ", ";
+      }
+
+      // close line
+      outputStream.write(" ]" + System.lineSeparator());
+    }
+
+    tabs = tabs.substring(0, tabs.length() - 1);
+    // clean things up for the next class
+    nonIdAttributes.clear();
+    idAttributes.clear();
   }
 
   private void writeAssClass(UmlAssociativeClass ac)
+  throws Exception
   {
-    try
+    // these open up the class with the basics
+    outputStream.write(tabs + "\"" + ac.name + "\": {" + System.lineSeparator());
+    tabs += "\t";
+
+    outputStream.write(tabs + "\"type\": \"object\"," + System.lineSeparator());
+    outputStream.write(tabs + "\"additionalProperties\": false," + System.lineSeparator());
+    outputStream.write(tabs + "\"properties\": {" + System.lineSeparator());
+    tabs += "\t";
+    // auxiliary variable, controls whether it is the first or last item added in a foreach loop
+    String control = "";
+
+    // prints each of the basic attribute definitions
+    for(UmlAttribute t : ac.attributes)
     {
-      // these open up the class with the basics
-      outputStream.write(tabs + "\"" + ac.name + "\": {" + System.lineSeparator());
-      tabs += "\t";
+      outputStream.write(control);
+      writeAttribute(t);
+      tabs = tabs.substring(0, tabs.length() - 1);
+      control = tabs + "}," + System.lineSeparator();
+    }
 
-      outputStream.write(tabs + "\"type\": \"object\"," + System.lineSeparator());
-      outputStream.write(tabs + "\"additionalProperties\": false," + System.lineSeparator());
-      outputStream.write(tabs + "\"properties\": {" + System.lineSeparator());
-      tabs += "\t";
-      // auxiliary variable, controls whether it is the first or last item added in a foreach loop
-      String control = "";
-
-      // prints each of the basic attribute definitions
-      for(UmlAttribute t : ac.attributes)
+    //get the ID of end1
+    for(UmlAttribute t : ac.end1.endElement.attributes)
+    {
+      for(UmlStereotype st : t.stereotypes)
       {
+        if(st.name.equals("id"))
+        {
+          outputStream.write(control);
+          UmlAttribute aux = new UmlAttribute();
+          aux.name = ac.end1.endElement.name + "ID";
+          aux.stereotypes.add(st);
+          ac.attributes.add(aux);
+
+          outputStream.write(tabs + "\"" + ac.end1.endElement.name + "ID\": {" + System.lineSeparator());
+          outputStream.write(tabs + "\t" + "\"$ref\": \"#/definitions/" + ac.end1.endElement.name + "/properties/" + t.name + "\"" + System.lineSeparator());
+          control = tabs + "}," + System.lineSeparator();
+        }
+      }
+    }
+
+    //get the ID of end2
+    for(UmlAttribute t : ac.end2.endElement.attributes)
+    {
+      for(UmlStereotype st : t.stereotypes)
+      {
+        if(st.name.equals("id"))
+        {
+          outputStream.write(control);
+          UmlAttribute aux = new UmlAttribute();
+          aux.name = ac.end2.endElement.name + "ID";
+          aux.stereotypes.add(st);
+          ac.attributes.add(aux);
+
+          outputStream.write(tabs + "\"" + ac.end2.endElement.name + "ID\": {" + System.lineSeparator());
+          outputStream.write(tabs + "\t" + "\"$ref\": \"#/definitions/" + ac.end2.endElement.name + "/properties/" + t.name + "\"" + System.lineSeparator());
+          control = tabs + "}," + System.lineSeparator();
+        }
+      }
+    }
+
+    // close the properties block
+    outputStream.write(tabs + "}" + System.lineSeparator());
+    tabs = tabs.substring(0, tabs.length() - 1);
+    outputStream.write(tabs + "}," + System.lineSeparator());
+
+    // gets the string of the identifier, and also fills up the nonIdAttributes list
+    String identifier = getIdentifier(ac);
+
+    if(nonIdAttributes.size() > 0 && identifier != "")
+    {
+      // open the dependencies block
+      outputStream.write(tabs + "\"dependencies\": {" + System.lineSeparator());
+      tabs += "\t";
+      control = "";
+
+      // prints each dependency line
+      for(UmlAttribute t : nonIdAttributes)
+      {
+        // no tabs here, it's a line closure
         outputStream.write(control);
-        writeAttribute(t);
-        tabs = tabs.substring(0, tabs.length() - 1);
-        control = tabs + "}," + System.lineSeparator();
+        outputStream.write(tabs + "\"" + t.name + "\": [ " + identifier + "]");
+        control = "," + System.lineSeparator();
       }
 
-      //get the ID of end1
-      for(UmlAttribute t : ac.end1.endElement.attributes)
-      {
-        for(UmlStereotype st : t.stereotypes)
-        {
-          if(st.name.equals("id"))
-          {
-            outputStream.write(control);
-            UmlAttribute aux = new UmlAttribute();
-            aux.name = ac.end1.endElement.name + "ID";
-            aux.stereotypes.add(st);
-            ac.attributes.add(aux);
-
-            outputStream.write(tabs + "\"" + ac.end1.endElement.name + "ID\": {" + System.lineSeparator());
-            outputStream.write(tabs + "\t" + "\"$ref\": \"#/definitions/" + ac.end1.endElement.name + "/properties/" + t.name + "\"" + System.lineSeparator());
-            control = tabs + "}," + System.lineSeparator();
-          }
-        }
-      }
-
-      //get the ID of end2
-      for(UmlAttribute t : ac.end2.endElement.attributes)
-      {
-        for(UmlStereotype st : t.stereotypes)
-        {
-          if(st.name.equals("id"))
-          {
-            outputStream.write(control);
-            UmlAttribute aux = new UmlAttribute();
-            aux.name = ac.end2.endElement.name + "ID";
-            aux.stereotypes.add(st);
-            ac.attributes.add(aux);
-
-            outputStream.write(tabs + "\"" + ac.end2.endElement.name + "ID\": {" + System.lineSeparator());
-            outputStream.write(tabs + "\t" + "\"$ref\": \"#/definitions/" + ac.end2.endElement.name + "/properties/" + t.name + "\"" + System.lineSeparator());
-            control = tabs + "}," + System.lineSeparator();
-          }
-        }
-      }
-
-      // close the properties block
-      outputStream.write(tabs + "}" + System.lineSeparator());
+      // close the dependencies block. no tabs in the first, line closure.
+      outputStream.write(System.lineSeparator());
       tabs = tabs.substring(0, tabs.length() - 1);
       outputStream.write(tabs + "}," + System.lineSeparator());
-
-      // gets the string of the identifier, and also fills up the nonIdAttributes list
-      String identifier = getIdentifier(ac);
-
-      if(nonIdAttributes.size() > 0 && identifier != "")
-      {
-        // open the dependencies block
-        outputStream.write(tabs + "\"dependencies\": {" + System.lineSeparator());
-        tabs += "\t";
-        control = "";
-
-        // prints each dependency line
-        for(UmlAttribute t : nonIdAttributes)
-        {
-          // no tabs here, it's a line closure
-          outputStream.write(control);
-          outputStream.write(tabs + "\"" + t.name + "\": [ " + identifier + "]");
-          control = "," + System.lineSeparator();
-        }
-
-        // close the dependencies block. no tabs in the first, line closure.
-        outputStream.write(System.lineSeparator());
-        tabs = tabs.substring(0, tabs.length() - 1);
-        outputStream.write(tabs + "}," + System.lineSeparator());
-      }
-
-      // check if each attribute is mandatory or optional
-      for(UmlAttribute t : ac.attributes)
-      {
-        if(t.multiplicity.minimum > 0 && (t.multiplicity.maximum > 0 || t.multiplicity.maximum == -1) && !idAttributes.contains(t))
-        {
-          idAttributes.add(t);
-        }
-      }
-
-      if(idAttributes.size() > 0)
-      {
-        // open the required block
-        outputStream.write(tabs + "\"required\": [ ");
-        control = "";
-        for(UmlAttribute t : idAttributes)
-        {
-          outputStream.write(control + "\"" + t.name + "\"");
-          control = ", ";
-        }
-
-        // close line
-        outputStream.write(" ]" + System.lineSeparator());
-      }
-
-      tabs = tabs.substring(0, tabs.length() - 1);
-      // clean things up for the next class
-      nonIdAttributes.clear();
-      idAttributes.clear();
     }
-    catch(Exception e)
+
+    // check if each attribute is mandatory or optional
+    for(UmlAttribute t : ac.attributes)
     {
-      e.printStackTrace();
+      if(t.multiplicity.minimum > 0 && (t.multiplicity.maximum > 0 || t.multiplicity.maximum == -1) && !idAttributes.contains(t))
+      {
+        idAttributes.add(t);
+      }
     }
+
+    if(idAttributes.size() > 0)
+    {
+      // open the required block
+      outputStream.write(tabs + "\"required\": [ ");
+      control = "";
+      for(UmlAttribute t : idAttributes)
+      {
+        outputStream.write(control + "\"" + t.name + "\"");
+        control = ", ";
+      }
+
+      // close line
+      outputStream.write(" ]" + System.lineSeparator());
+    }
+
+    tabs = tabs.substring(0, tabs.length() - 1);
+    // clean things up for the next class
+    nonIdAttributes.clear();
+    idAttributes.clear();
   }
 
   private void createAssociationAttribute(UmlAssociationEnd ass, UmlClass c)
+  throws Exception
   {
-    try
+    // 0..1 or 1..1
+    if((ass.endMultiplicity.minimum == 1 && ass.endMultiplicity.maximum == 1)
+    || (ass.endMultiplicity.minimum == 0 && ass.endMultiplicity.maximum == 1))
     {
-      // 0..1 or 1..1
-      if((ass.endMultiplicity.minimum == 1 && ass.endMultiplicity.maximum == 1)
-      || (ass.endMultiplicity.minimum == 0 && ass.endMultiplicity.maximum == 1))
-      {
-        for(UmlAttribute t : ass.endElement.attributes)
-        {
-          for(UmlStereotype st : t.stereotypes)
-          {
-            if(st.name.equals("id"))
-            {
-              // this just makes a dummy attribute with the FK for the required and dependencies blocks
-              UmlAttribute aux = new UmlAttribute();
-              aux.name = ass.endElement.name;
-              aux.multiplicity = ass.endMultiplicity;
-              nonIdAttributes.add(aux);
-              c.attributes.add(aux);
-
-              outputStream.write(tabs + "\"" + ass.endElement.name + "\": {" + System.lineSeparator());
-              outputStream.write(tabs + "\t" + "\"$ref\": \"#/definitions/" + ass.endElement.name + "/properties/" + t.name + "\"" + System.lineSeparator());
-            }
-          }
-        }
-      }
-      // 1..*, * or 0..*
-      else
-      {
-        for(UmlAttribute t : ass.endElement.attributes)
-        {
-          for(UmlStereotype st : t.stereotypes)
-          {
-            if(st.name.equals("id"))
-            {
-              // this just makes a dummy attribute with the FK for the required and dependencies blocks
-              UmlAttribute aux = new UmlAttribute();
-              aux.name = ass.endElement.name + "s";
-              aux.multiplicity = ass.endMultiplicity;
-              nonIdAttributes.add(aux);
-              c.attributes.add(aux);
-
-              outputStream.write(tabs + "\"" + ass.endElement.name + "s\": {" + System.lineSeparator());
-              tabs += "\t";
-              outputStream.write(tabs + "\"type\": \"array\"," + System.lineSeparator());
-              outputStream.write(tabs + "\"items\": {" + System.lineSeparator());
-              outputStream.write(tabs + "\t" + "\"$ref\": \"#/definitions/" + ass.endElement.name + "/properties/" + t.name + "\"" + System.lineSeparator());
-              outputStream.write(tabs + "\t}" + System.lineSeparator());
-              tabs = tabs.substring(0, tabs.length() - 1);
-            }
-          }
-        }
-      }
-    }
-    catch(Exception e)
-    {
-      e.printStackTrace();
-    }
-  }
-
-  private void createAggregationAttribute(UmlAssociationEnd ass, UmlClass c)
-  {
-    try
-    {
-      // this just makes a dummy attribute with the FK for the required and dependencies blocks
-      UmlAttribute aux = new UmlAttribute();
-      aux.name = ass.endElement.name + "s";
-      aux.multiplicity = ass.endMultiplicity;
-      nonIdAttributes.add(aux);
-      c.attributes.add(aux);
-
       for(UmlAttribute t : ass.endElement.attributes)
       {
         for(UmlStereotype st : t.stereotypes)
         {
           if(st.name.equals("id"))
           {
+            // this just makes a dummy attribute with the FK for the required and dependencies blocks
+            UmlAttribute aux = new UmlAttribute();
+            aux.name = ass.endElement.name;
+            aux.multiplicity = ass.endMultiplicity;
+            nonIdAttributes.add(aux);
+            c.attributes.add(aux);
+
+            outputStream.write(tabs + "\"" + ass.endElement.name + "\": {" + System.lineSeparator());
+            outputStream.write(tabs + "\t" + "\"$ref\": \"#/definitions/" + ass.endElement.name + "/properties/" + t.name + "\"" + System.lineSeparator());
+          }
+        }
+      }
+    }
+    // 1..*, * or 0..*
+    else
+    {
+      for(UmlAttribute t : ass.endElement.attributes)
+      {
+        for(UmlStereotype st : t.stereotypes)
+        {
+          if(st.name.equals("id"))
+          {
+            // this just makes a dummy attribute with the FK for the required and dependencies blocks
+            UmlAttribute aux = new UmlAttribute();
+            aux.name = ass.endElement.name + "s";
+            aux.multiplicity = ass.endMultiplicity;
+            nonIdAttributes.add(aux);
+            c.attributes.add(aux);
+
             outputStream.write(tabs + "\"" + ass.endElement.name + "s\": {" + System.lineSeparator());
             tabs += "\t";
             outputStream.write(tabs + "\"type\": \"array\"," + System.lineSeparator());
@@ -550,74 +503,91 @@ public class ModelWriter
         }
       }
     }
-    catch(Exception e)
+  }
+
+  private void createAggregationAttribute(UmlAssociationEnd ass, UmlClass c)
+  throws Exception
+  {
+    // this just makes a dummy attribute with the FK for the required and dependencies blocks
+    UmlAttribute aux = new UmlAttribute();
+    aux.name = ass.endElement.name + "s";
+    aux.multiplicity = ass.endMultiplicity;
+    nonIdAttributes.add(aux);
+    c.attributes.add(aux);
+
+    for(UmlAttribute t : ass.endElement.attributes)
     {
-      e.printStackTrace();
+      for(UmlStereotype st : t.stereotypes)
+      {
+        if(st.name.equals("id"))
+        {
+          outputStream.write(tabs + "\"" + ass.endElement.name + "s\": {" + System.lineSeparator());
+          tabs += "\t";
+          outputStream.write(tabs + "\"type\": \"array\"," + System.lineSeparator());
+          outputStream.write(tabs + "\"items\": {" + System.lineSeparator());
+          outputStream.write(tabs + "\t" + "\"$ref\": \"#/definitions/" + ass.endElement.name + "/properties/" + t.name + "\"" + System.lineSeparator());
+          outputStream.write(tabs + "\t}" + System.lineSeparator());
+          tabs = tabs.substring(0, tabs.length() - 1);
+        }
+      }
     }
   }
 
   // writes a single attribute. implicit attributes go elseweyr.
-  private void writeAttribute(UmlAttribute t)
+  private void writeAttribute(UmlAttribute t) throws Exception
   {
-    try
+    // this is to keep track of the array "items" closure
+    boolean arrayMark = false;
+
+    outputStream.write(tabs + "\"" + t.name + "\": {" + System.lineSeparator());
+    tabs += "\t";
+
+    // normal attribute
+    if(t.multiplicity.maximum == 1 || t.multiplicity.maximum == 0)
     {
-      // this is to keep track of the array "items" closure
-      boolean arrayMark = false;
-
-      outputStream.write(tabs + "\"" + t.name + "\": {" + System.lineSeparator());
-      tabs += "\t";
-
-      // normal attribute
-      if(t.multiplicity.maximum == 1 || t.multiplicity.maximum == 0)
-      {
-        outputStream.write(tabs + "\"type\": " + getType(t));
-      }
-
-      // array attribute
-      if(t.multiplicity.maximum > 1 || t.multiplicity.maximum == -1)
-      {
-        outputStream.write(tabs + "\"type\": \"array\"," + System.lineSeparator());
-        outputStream.write(tabs + "\"items\":{" + System.lineSeparator());
-        tabs += "\t";
-        // no line closure here so that it can add a comma if it's a special type
-        outputStream.write(tabs + "\"type\": " + getType(t));
-        arrayMark = true;
-      }
-
-      // special types of attributes
-      if(t.type.equals("byte"))
-      {
-        outputStream.write("," + System.lineSeparator());
-        outputStream.write(tabs + "\"minimum\": 0," + System.lineSeparator());
-        outputStream.write(tabs + "\"maximum\": 255" + System.lineSeparator());
-      }
-      else if(t.type.equals("char"))
-      {
-        outputStream.write("," + System.lineSeparator());
-        outputStream.write(tabs + "\"maxLength\": 1" + System.lineSeparator());
-      }
-      // else if(t.type.equals("Date"))
-      // {
-      //   outputStream.write("," + System.lineSeparator());
-      //   outputStream.write(tabs + "\"format\": \"date-time\"" + System.lineSeparator());
-      // }
-      else
-      {
-        // it's not a special type so just close the line
-        outputStream.write(System.lineSeparator());
-      }
-
-      // if it's an array, close the items block here
-      if(arrayMark)
-      {
-        arrayMark = false;
-        tabs = tabs.substring(0, tabs.length() - 1);
-        outputStream.write(tabs + "}" + System.lineSeparator());
-      }
+      outputStream.write(tabs + "\"type\": " + getType(t));
     }
-    catch(Exception e)
+
+    // array attribute
+    if(t.multiplicity.maximum > 1 || t.multiplicity.maximum == -1)
     {
-      e.printStackTrace();
+      outputStream.write(tabs + "\"type\": \"array\"," + System.lineSeparator());
+      outputStream.write(tabs + "\"items\":{" + System.lineSeparator());
+      tabs += "\t";
+      // no line closure here so that it can add a comma if it's a special type
+      outputStream.write(tabs + "\"type\": " + getType(t));
+      arrayMark = true;
+    }
+
+    // special types of attributes
+    if(t.type.equals("byte"))
+    {
+      outputStream.write("," + System.lineSeparator());
+      outputStream.write(tabs + "\"minimum\": 0," + System.lineSeparator());
+      outputStream.write(tabs + "\"maximum\": 255" + System.lineSeparator());
+    }
+    else if(t.type.equals("char"))
+    {
+      outputStream.write("," + System.lineSeparator());
+      outputStream.write(tabs + "\"maxLength\": 1" + System.lineSeparator());
+    }
+    // else if(t.type.equals("Date"))
+    // {
+    //   outputStream.write("," + System.lineSeparator());
+    //   outputStream.write(tabs + "\"format\": \"date-time\"" + System.lineSeparator());
+    // }
+    else
+    {
+      // it's not a special type so just close the line
+      outputStream.write(System.lineSeparator());
+    }
+
+    // if it's an array, close the items block here
+    if(arrayMark)
+    {
+      arrayMark = false;
+      tabs = tabs.substring(0, tabs.length() - 1);
+      outputStream.write(tabs + "}" + System.lineSeparator());
     }
   }
 
