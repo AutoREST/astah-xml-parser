@@ -1,6 +1,7 @@
 package autorest.astahxmlparser.xmlreader;
 
 import autorest.astahxmlparser.umldatastructure.*;
+import autorest.astahxmlparser.CompilerDirectives;
 import java.util.Iterator;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
@@ -66,10 +67,13 @@ public class ModelBuilder
 
   private void fillPackages()
   {
-    System.out.println("------------------");
-    System.out.println("PACKAGES:");
-    System.out.println("------------------");
-    System.out.println(" ");
+    if(CompilerDirectives.DEBUG)
+    {
+      System.out.println("------------------");
+      System.out.println("PACKAGES:");
+      System.out.println("------------------");
+      System.out.println(" ");
+    }
 
     NodeList result = doc.getElementsByTagName("UML:Package");
     for(int i = 0; i < result.getLength(); i++)
@@ -79,10 +83,16 @@ public class ModelBuilder
       {
         UmlPackage packageCreation = new UmlPackage();
         packageCreation.id = resultNode.getAttribute("xmi.id");
-        System.out.println("ID: " + packageCreation.id);
+        if(CompilerDirectives.DEBUG)
+        {
+          System.out.println("ID: " + packageCreation.id);
+        }
         packageCreation.name = resultNode.getAttribute("name");
-        System.out.println("Name: " + packageCreation.name);
-        System.out.println(" ");
+        if(CompilerDirectives.DEBUG)
+        {
+          System.out.println("Name: " + packageCreation.name);
+          System.out.println(" ");
+        }
         this.model.packages.put(packageCreation.id, packageCreation);
       }
     }
@@ -96,10 +106,16 @@ public class ModelBuilder
       {
         UmlPackage packageCreation = new UmlPackage();
         packageCreation.id = resultNode.getAttribute("xmi.id");
-        System.out.println("ID: " + packageCreation.id);
+        if(CompilerDirectives.DEBUG)
+        {
+          System.out.println("ID: " + packageCreation.id);
+        }
         packageCreation.name = resultNode.getAttribute("name");
-        System.out.println("Name: " + packageCreation.name);
-        System.out.println(" ");
+        if(CompilerDirectives.DEBUG)
+        {
+          System.out.println("Name: " + packageCreation.name);
+          System.out.println(" ");
+        }
         this.model.packages.put(packageCreation.id, packageCreation);
       }
     }
@@ -107,10 +123,13 @@ public class ModelBuilder
 
   private void fillStereotypes()
   {
-    System.out.println("------------------");
-    System.out.println("STEREOTYPES:");
-    System.out.println("------------------");
-    System.out.println(" ");
+    if(CompilerDirectives.DEBUG)
+    {
+      System.out.println("------------------");
+      System.out.println("STEREOTYPES:");
+      System.out.println("------------------");
+      System.out.println(" ");
+    }
 
     NodeList result = doc.getElementsByTagName("UML:Stereotype");
     for(int i = 0; i < result.getLength(); i++)
@@ -120,10 +139,16 @@ public class ModelBuilder
       {
         UmlStereotype stereotypeCreation = new UmlStereotype();
         stereotypeCreation.id = resultNode.getAttribute("xmi.id");
-        System.out.println("ID: " + stereotypeCreation.id);
+        if(CompilerDirectives.DEBUG)
+        {
+          System.out.println("ID: " + stereotypeCreation.id);
+        }
         stereotypeCreation.name = resultNode.getAttribute("name");
-        System.out.println("Name: " + stereotypeCreation.name);
-        System.out.println(" ");
+        if(CompilerDirectives.DEBUG)
+        {
+          System.out.println("Name: " + stereotypeCreation.name);
+          System.out.println(" ");
+        }
         this.model.stereotypes.put(stereotypeCreation.id, stereotypeCreation);
       }
     }
@@ -131,10 +156,13 @@ public class ModelBuilder
 
   private void fillTypes()
   {
-    System.out.println("------------------");
-    System.out.println("TYPES:");
-    System.out.println("------------------");
-    System.out.println(" ");
+    if(CompilerDirectives.DEBUG)
+    {
+      System.out.println("------------------");
+      System.out.println("TYPES:");
+      System.out.println("------------------");
+      System.out.println(" ");
+    }
 
     NodeList result = doc.getElementsByTagName("UML:Primitive");
     for(int i = 0; i < result.getLength(); i++)
@@ -142,10 +170,16 @@ public class ModelBuilder
       Element resultNode = (Element)result.item(i);
       UmlType typeCreation = new UmlType();
       typeCreation.id = resultNode.getAttribute("xmi.id");
-      System.out.println("ID: " + typeCreation.id);
+      if(CompilerDirectives.DEBUG)
+      {
+        System.out.println("ID: " + typeCreation.id);
+      }
       typeCreation.name = resultNode.getAttribute("name");
-      System.out.println("Name: " + typeCreation.name);
-      System.out.println(" ");
+      if(CompilerDirectives.DEBUG)
+      {
+        System.out.println("Name: " + typeCreation.name);
+        System.out.println(" ");
+      }
       this.model.types.put(typeCreation.id, typeCreation);
     }
     result = doc.getElementsByTagName("UML:Class");
@@ -156,20 +190,32 @@ public class ModelBuilder
       {
         UmlType typeCreation = new UmlType();
         typeCreation.id = resultNode.getAttribute("xmi.id");
-        System.out.println("ID: " + typeCreation.id);
+        if(CompilerDirectives.DEBUG)
+        {
+          System.out.println("ID: " + typeCreation.id);
+        }
         typeCreation.name = resultNode.getAttribute("name");
-        System.out.println("Name: " + typeCreation.name);
-        System.out.println(" ");
+        if(CompilerDirectives.DEBUG)
+        {
+          System.out.println("Name: " + typeCreation.name);
+          System.out.println(" ");
+        }
         this.model.types.put(typeCreation.id, typeCreation);
       }
       if(resultNode.getAttribute("name").equals("String"))
       {
         UmlType typeCreation = new UmlType();
         typeCreation.id = resultNode.getAttribute("xmi.id");
-        System.out.println("ID: " + typeCreation.id);
+        if(CompilerDirectives.DEBUG)
+        {
+          System.out.println("ID: " + typeCreation.id);
+        }
         typeCreation.name = resultNode.getAttribute("name");
-        System.out.println("Name: " + typeCreation.name);
-        System.out.println(" ");
+        if(CompilerDirectives.DEBUG)
+        {
+          System.out.println("Name: " + typeCreation.name);
+          System.out.println(" ");
+        }
         this.model.types.put(typeCreation.id, typeCreation);
       }
     }
@@ -177,10 +223,13 @@ public class ModelBuilder
 
   private void fillClasses()
   {
-    System.out.println("------------------");
-    System.out.println("CLASSES:");
-    System.out.println("------------------");
-    System.out.println(" ");
+    if(CompilerDirectives.DEBUG)
+    {
+      System.out.println("------------------");
+      System.out.println("CLASSES:");
+      System.out.println("------------------");
+      System.out.println(" ");
+    }
 
     NodeList result = doc.getElementsByTagName("UML:Class");
     for(int i = 0; i < result.getLength(); i++)
@@ -192,12 +241,21 @@ public class ModelBuilder
         Element resultNode = (Element)result.item(i);
         UmlClass classCreation = new UmlClass();
         classCreation.id = resultNode.getAttribute("xmi.id");
-        System.out.println("ID: " + classCreation.id);
+        if(CompilerDirectives.DEBUG)
+        {
+          System.out.println("ID: " + classCreation.id);
+        }
         classCreation.name = resultNode.getAttribute("name");
-        System.out.println("Name: " + classCreation.name);
+        if(CompilerDirectives.DEBUG)
+        {
+          System.out.println("Name: " + classCreation.name);
+        }
         //obvs the classes inside the whole "java" package will be here, but hey, this code is shit so i don't check for it. i just wanna make sure classes in the root aren't caught, because those assholes would cause me exceptions. ain't nobody got time for exception handling. i mean did you SEE the try-catch blocks in the main method of this class?
         classCreation.parentPackage = model.packages.get(namespaceId);
-        System.out.println("Package: " + classCreation.parentPackage.name);
+        if(CompilerDirectives.DEBUG)
+        {
+          System.out.println("Package: " + classCreation.parentPackage.name);
+        }
         NodeList resultChildren = result.item(i).getChildNodes();
         //this part is still checking class stuff, so it stays here. yeah yeah, looping fors in the same method, yada yada. tough.
         for(int j = 0; j < resultChildren.getLength(); j++)
@@ -229,7 +287,10 @@ public class ModelBuilder
             }
           }
         }
-        System.out.println(" ");
+        if(CompilerDirectives.DEBUG)
+        {
+          System.out.println(" ");
+        }
         this.model.classes.put(classCreation.id, classCreation);
       }
     }
@@ -238,10 +299,13 @@ public class ModelBuilder
   //son of a ballsmith, the fact this method exists is sinful. half of this is copypasta of fillClasses but damned if i'm gonna fix it.
   private void fillAssociativeClasses() throws Exception
   {
-    System.out.println("------------------");
-    System.out.println("ASSOCIATIVE CLASSES:");
-    System.out.println("------------------");
-    System.out.println(" ");
+    if(CompilerDirectives.DEBUG)
+    {
+      System.out.println("------------------");
+      System.out.println("ASSOCIATIVE CLASSES:");
+      System.out.println("------------------");
+      System.out.println(" ");
+    }
 
     NodeList result = doc.getElementsByTagName("UML:AssociationClass");
     for(int i = 0; i < result.getLength(); i++)
@@ -255,12 +319,21 @@ public class ModelBuilder
         //didn't even change the variable name. makes sense? nope. but easier, and i'm lazy.
         UmlAssociativeClass classCreation = new UmlAssociativeClass();
         classCreation.id = resultNode.getAttribute("xmi.id");
-        System.out.println("ID: " + classCreation.id);
+        if(CompilerDirectives.DEBUG)
+        {
+          System.out.println("ID: " + classCreation.id);
+        }
         classCreation.name = resultNode.getAttribute("name");
-        System.out.println("Name: " + classCreation.name);
+        if(CompilerDirectives.DEBUG)
+        {
+          System.out.println("Name: " + classCreation.name);
+        }
         //obvs the classes inside the whole "java" package will be here, but hey, this code is shit so i don't check for it. i just wanna make sure classes in the root aren't caught, because those assholes would cause me exceptions. ain't nobody got time for exception handling. i mean did you SEE the try-catch blocks in the main method of this class?
         classCreation.parentPackage = model.packages.get(namespaceId);
-        System.out.println("Package: " + classCreation.parentPackage.name);
+        if(CompilerDirectives.DEBUG)
+        {
+          System.out.println("Package: " + classCreation.parentPackage.name);
+        }
         NodeList resultChildren = result.item(i).getChildNodes();
         //this part is still checking class stuff, so it stays here. yeah yeah, looping fors in the same method, yada yada. tough.
         for(int j = 0; j < resultChildren.getLength(); j++)
@@ -307,13 +380,19 @@ public class ModelBuilder
                 {
                   if(turn == 1)
                   {
-                    System.out.println("END1: ");
+                    if(CompilerDirectives.DEBUG)
+                    {
+                      System.out.println("END1: ");
+                    }
                     classCreation.end1 = readAssociationEnd(listness.item(k));
                     turn++;
                   }
                   else
                   {
-                    System.out.println("END2: ");
+                    if(CompilerDirectives.DEBUG)
+                    {
+                      System.out.println("END2: ");
+                    }
                     classCreation.end2 = readAssociationEnd(listness.item(k));
                   }
                 }
@@ -322,7 +401,10 @@ public class ModelBuilder
           }
         }
         this.model.associativeClasses.put(classCreation.id, classCreation);
-        System.out.println(" ");
+        if(CompilerDirectives.DEBUG)
+        {
+          System.out.println(" ");
+        }
       }
     }
   }
@@ -330,10 +412,13 @@ public class ModelBuilder
   //this one is kinda iffy 'cause association definitions are all over the place, but i'll try to grab them from the primary definitions
   private void fillAssociations() throws Exception
   {
-    System.out.println("------------------");
-    System.out.println("ASSOCIATIONS:");
-    System.out.println("------------------");
-    System.out.println(" ");
+    if(CompilerDirectives.DEBUG)
+    {
+      System.out.println("------------------");
+      System.out.println("ASSOCIATIONS:");
+      System.out.println("------------------");
+      System.out.println(" ");
+    }
 
     NodeList result = doc.getElementsByTagName("UML:Association");
     for(int i = 0; i < result.getLength(); i++)
@@ -345,7 +430,10 @@ public class ModelBuilder
         {
           UmlAssociation associationCreation = new UmlAssociation();
           associationCreation.id = resultElement.getAttribute("xmi.id");
-          System.out.println("ID: " + associationCreation.id);
+          if(CompilerDirectives.DEBUG)
+          {
+            System.out.println("ID: " + associationCreation.id);
+          }
           NodeList resultChildren = result.item(i).getChildNodes();
           for(int j = 0; j < resultChildren.getLength(); j++)
           {
@@ -367,13 +455,19 @@ public class ModelBuilder
                   {
                     if(turn == 1)
                     {
-                      System.out.println("END1: ");
+                      if(CompilerDirectives.DEBUG)
+                      {
+                        System.out.println("END1: ");
+                      }
                       associationCreation.end1 = readAssociationEnd(listness.item(k));
                       turn++;
                     }
                     else
                     {
-                      System.out.println("END2: ");
+                      if(CompilerDirectives.DEBUG)
+                      {
+                        System.out.println("END2: ");
+                      }
                       associationCreation.end2 = readAssociationEnd(listness.item(k));
                     }
                   }
@@ -382,7 +476,10 @@ public class ModelBuilder
             }
           }
           this.model.associations.put(associationCreation.id, associationCreation);
-          System.out.println(" ");
+          if(CompilerDirectives.DEBUG)
+          {
+            System.out.println(" ");
+          }
         }
       }
     }
@@ -390,10 +487,13 @@ public class ModelBuilder
 
   private void fillRealizations()
   {
-    System.out.println("------------------");
-    System.out.println("REALIZATIONS:");
-    System.out.println("------------------");
-    System.out.println(" ");
+    if(CompilerDirectives.DEBUG)
+    {
+      System.out.println("------------------");
+      System.out.println("REALIZATIONS:");
+      System.out.println("------------------");
+      System.out.println(" ");
+    }
 
     NodeList result = doc.getElementsByTagName("UML:Generalization");
     UmlElement parent = null;
@@ -448,9 +548,12 @@ public class ModelBuilder
             }
           }
           child.parent = parent;
-          System.out.println("Parent: " + parent.name);
-          System.out.println("Child: " + child.name);
-          System.out.println(" ");
+          if(CompilerDirectives.DEBUG)
+          {
+            System.out.println("Parent: " + parent.name);
+            System.out.println("Child: " + child.name);
+            System.out.println(" ");
+          }
         }
       }
     }
@@ -535,12 +638,18 @@ public class ModelBuilder
               if((endElement = this.model.classes.get(endHolder.getAttribute("xmi.idref"))) != null)
               {
                 endsy.endElement = endElement;
-                System.out.println("\tName: " + endsy.endElement.name);
+                if(CompilerDirectives.DEBUG)
+                {
+                  System.out.println("\tName: " + endsy.endElement.name);
+                }
               }
               else
               {
                 //now this is tricky. if the element is NOT known to the model at this point, the model's most likely fubar, so might as well set it on fire. so i'mma set it on fire.
-                System.out.println("ASSOCIATION END DOESN'T EXIST");
+                if(CompilerDirectives.DEBUG)
+                {
+                  System.out.println("ASSOCIATION END DOESN'T EXIST");
+                }
                 throw new Exception("ASSOCIATION END DOESN'T EXIST");
               }
             }
@@ -579,12 +688,18 @@ public class ModelBuilder
                             if(multiplicityElement.hasAttribute("lower"))
                             {
                               endsy.endMultiplicity.minimum = Integer.parseInt(multiplicityElement.getAttribute("lower"));
-                              System.out.println("\tMinimum: " + endsy.endMultiplicity.minimum);
+                              if(CompilerDirectives.DEBUG)
+                              {
+                                System.out.println("\tMinimum: " + endsy.endMultiplicity.minimum);
+                              }
                             }
                             if(multiplicityElement.hasAttribute("upper"))
                             {
                               endsy.endMultiplicity.maximum = Integer.parseInt(multiplicityElement.getAttribute("upper"));
-                              System.out.println("\tMaximum: " + endsy.endMultiplicity.maximum);
+                              if(CompilerDirectives.DEBUG)
+                              {
+                                System.out.println("\tMaximum: " + endsy.endMultiplicity.maximum);
+                              }
                             }
                           }
                         }
@@ -604,13 +719,22 @@ public class ModelBuilder
 
   private UmlAttribute createAttribute(Node parent)
   {
-    System.out.println("\tATTRIBUTE: ");
+    if(CompilerDirectives.DEBUG)
+    {
+      System.out.println("\tATTRIBUTE: ");
+    }
     Element attributeElement = (Element)parent;
     UmlAttribute attributeCreation = new UmlAttribute();
     attributeCreation.id = attributeElement.getAttribute("xmi.id");
-    System.out.println("\tID: " + attributeCreation.id);
+    if(CompilerDirectives.DEBUG)
+    {
+      System.out.println("\tID: " + attributeCreation.id);
+    }
     attributeCreation.name = attributeElement.getAttribute("name");
-    System.out.println("\tName: " + attributeCreation.name);
+    if(CompilerDirectives.DEBUG)
+    {
+      System.out.println("\tName: " + attributeCreation.name);
+    }
 
     //HERE WE GO AGAIN
     NodeList attributeChildren = parent.getChildNodes();
@@ -638,7 +762,10 @@ public class ModelBuilder
               if((attributeStereotype = model.stereotypes.get(attributeStereotypeElement.getAttribute("xmi.idref"))) != null)
               {
                 attributeCreation.stereotypes.add(attributeStereotype);
-                System.out.println("\tStereotype: " + attributeStereotype.name);
+                if(CompilerDirectives.DEBUG)
+                {
+                  System.out.println("\tStereotype: " + attributeStereotype.name);
+                }
               }
             }
           }
@@ -674,9 +801,15 @@ public class ModelBuilder
                           {
                             //i was gonna whine about them using -1 for * but that's actually pretty clever, i'mma do it too.
                             attributeCreation.multiplicity.minimum = Integer.parseInt(multiplicityElement.getAttribute("lower"));
-                            System.out.println("\tMinimum: " + attributeCreation.multiplicity.minimum);
+                            if(CompilerDirectives.DEBUG)
+                            {
+                              System.out.println("\tMinimum: " + attributeCreation.multiplicity.minimum);
+                            }
                             attributeCreation.multiplicity.maximum = Integer.parseInt(multiplicityElement.getAttribute("upper"));
-                            System.out.println("\tMaximum: " + attributeCreation.multiplicity.maximum);
+                            if(CompilerDirectives.DEBUG)
+                            {
+                              System.out.println("\tMaximum: " + attributeCreation.multiplicity.maximum);
+                            }
                           }
                         }
                       }
@@ -707,7 +840,10 @@ public class ModelBuilder
               {
                 attributeCreation.type = "object";
               }
-              System.out.println("\tType: " + attributeCreation.type);
+              if(CompilerDirectives.DEBUG)
+              {
+                System.out.println("\tType: " + attributeCreation.type);
+              }
             }
           }
         }
