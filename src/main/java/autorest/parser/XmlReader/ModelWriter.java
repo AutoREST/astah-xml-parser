@@ -270,13 +270,14 @@ public class ModelWriter
     // close the properties block
     outputStream.write(tabs + "}" + System.lineSeparator());
     tabs = tabs.substring(0, tabs.length() - 1);
-    outputStream.write(tabs + "}," + System.lineSeparator());
+    outputStream.write(tabs + "}");
 
     // gets the string of the identifier, and also fills up the nonIdAttributes list
     String identifier = getIdentifier(c);
 
     if(nonIdAttributes.size() > 0 && identifier != "")
     {
+      outputStream.write("," +  + System.lineSeparator());
       // open the dependencies block
       outputStream.write(tabs + "\"dependencies\": {" + System.lineSeparator());
       tabs += "\t";
@@ -294,7 +295,7 @@ public class ModelWriter
       // close the dependencies block. no tabs in the first, line closure.
       outputStream.write(System.lineSeparator());
       tabs = tabs.substring(0, tabs.length() - 1);
-      outputStream.write(tabs + "}," + System.lineSeparator());
+      outputStream.write(tabs + "}");
     }
 
     // check if each attribute is mandatory or optional
@@ -308,6 +309,7 @@ public class ModelWriter
 
     if(idAttributes.size() > 0)
     {
+      outputStream.write("," +  + System.lineSeparator());
       // open the required block
       outputStream.write(tabs + "\"required\": [ ");
       control = "";
