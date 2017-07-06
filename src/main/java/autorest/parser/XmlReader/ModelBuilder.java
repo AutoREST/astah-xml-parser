@@ -423,6 +423,10 @@ public class ModelBuilder
           }
         }
         this.model.associativeClasses.put(classCreation.id, classCreation);
+        UmlAssociation assClassClone = new UmlAssociation();
+        assClassClone.end1 = classCreation.end1;
+        assClassClone.end2 = classCreation.end2;
+        this.model.associations.put(classCreation.id, assClassClone);
         if(CompilerDirectives.DEBUG)
         {
           System.out.println(" ");
