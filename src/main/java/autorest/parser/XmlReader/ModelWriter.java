@@ -271,7 +271,7 @@ public class ModelWriter
 
     if(nonIdAttributes.size() > 0 && identifier != "")
     {
-      outputStream.write("," +  + System.lineSeparator());
+      outputStream.write("," + System.lineSeparator());
       // open the dependencies block
       outputStream.write(tabs + "\"dependencies\": {" + System.lineSeparator());
       tabs += "\t";
@@ -303,7 +303,7 @@ public class ModelWriter
 
     if(idAttributes.size() > 0)
     {
-      outputStream.write("," +  + System.lineSeparator());
+      outputStream.write("," + System.lineSeparator());
       // open the required block
       outputStream.write(tabs + "\"required\": [ ");
       control = "";
@@ -314,8 +314,10 @@ public class ModelWriter
       }
 
       // close line
-      outputStream.write(" ]" + System.lineSeparator());
+      outputStream.write(" ]");
     }
+
+    outputStream.write(System.lineSeparator());
 
     tabs = tabs.substring(0, tabs.length() - 1);
     // clean things up for the next class
