@@ -26,24 +26,14 @@ public class TestApp
     else
     {
       Set<String> packages = XmlReader.AcquirePackages(args[0]);
-      try
+      System.out.print("[");
+      String control = "";
+      for(String s : packages)
       {
-        Writer outputStream = new FileWriter("packages.txt");
-        System.out.print("[");
-        String control = "";
-        for(String s : packages)
-        {
-          outputStream.write(s + System.lineSeparator());
-          System.out.print(control + "\'" + s + "\'");
-          control = ",";
-        }
-        System.out.print("]");
-        outputStream.close();
+        System.out.print(control + "\'" + s + "\'");
+        control = ",";
       }
-      catch(IOException e)
-      {
-        e.printStackTrace();
-      }
+      System.out.print("]");
     }
   }
 }
