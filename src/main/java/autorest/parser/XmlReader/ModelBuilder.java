@@ -31,11 +31,8 @@ public class ModelBuilder
     this.doc = doc;
   }
 
-  public UmlModel Build()
+  public UmlModel Build() throws Exception //whole method is a throw because fuck it that's why
   {
-    //whole method inside try because fuck it that's why
-    try
-    {
       //trust me, it was much worse. you should be grateful I spared you
       fillPackages();
       fillStereotypes();
@@ -45,13 +42,7 @@ public class ModelBuilder
       fillAssociativeClasses();
       fillAssociations();
       fillRealizations();
-    }
-    catch(Exception e)
-    {
-      System.out.println("ERROR: in reading the xml");
-      e.printStackTrace();
-    }
-
+    //   System.out.println("ERROR: in reading the xml");
     return model;
   }
 
@@ -63,7 +54,7 @@ public class ModelBuilder
     }
     catch(Exception e)
     {
-      System.out.println("ERROR: in acquiring the packages");
+      System.out.println("err, in acquiring the packages");
       e.printStackTrace();
     }
     Set<String> result = new HashSet();

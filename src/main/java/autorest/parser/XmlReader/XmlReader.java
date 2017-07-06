@@ -9,7 +9,7 @@ import org.w3c.dom.Document;
 
 public class XmlReader
 {
-  public static UmlModel ReadModel(String input)
+  public static UmlModel ReadModel(String input) throws Exception
   {
     Document doc = AcquireDocument(input);
 
@@ -18,7 +18,7 @@ public class XmlReader
     return mb.Build();
   }
 
-  public static Set<String> AcquirePackages(String input)
+  public static Set<String> AcquirePackages(String input) throws Exception
   {
     Document doc = AcquireDocument(input);
 
@@ -27,21 +27,12 @@ public class XmlReader
     return mb.GetPackages();
   }
 
-  private static Document AcquireDocument(String input)
+  private static Document AcquireDocument(String input) throws Exception
   {
-    try
-    {
-      File file = new File(input);
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-      dbf.setNamespaceAware(true);
-      DocumentBuilder db = dbf.newDocumentBuilder();
-      return db.parse(file);
-    }
-    catch (Exception e)
-    {
-	     e.printStackTrace();
-    }
-
-    return null;
+    File file = new File(input);
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    dbf.setNamespaceAware(true);
+    DocumentBuilder db = dbf.newDocumentBuilder();
+    return db.parse(file);
   }
 }

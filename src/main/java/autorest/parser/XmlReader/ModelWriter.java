@@ -29,10 +29,8 @@ public class ModelWriter
   public List<UmlAttribute> idAttributes;
 
   // initialize the ModelWriter
-  public ModelWriter(UmlModel model, String path, String packageName)
+  public ModelWriter(UmlModel model, String path, String packageName) throws Exception
   {
-    try
-    {
       this.model = model;
       this.path = path;
       this.packageName = packageName;
@@ -43,15 +41,10 @@ public class ModelWriter
       validAssClasses = new ArrayList();
       nonIdAttributes = new ArrayList();
       idAttributes = new ArrayList();
-    }
-    catch(Exception e)
-    {
-      e.printStackTrace();
-    }
   }
 
   // herpaderp
-  public void Write()
+  public void Write() throws Exception
   {
     try
     {
@@ -98,8 +91,9 @@ public class ModelWriter
     }
     catch(Exception e)
     {
-      System.out.println("ERROR: in building the JSON Schema");
+      System.out.println("err, in building the JSON Schema");
       e.printStackTrace();
+      throw e;
     }
   }
 
@@ -126,7 +120,7 @@ public class ModelWriter
 
     if(validClasses.size() + validAssClasses.size() == 0)
     {
-      throw new IllegalArgumentException("ERROR: empty package selected");
+      throw new IllegalArgumentException("empty package selected");
     }
   }
 
