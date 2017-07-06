@@ -11,6 +11,7 @@ public class TestApp
 {
   public static void main(String args[])
   {
+    try {
     if(args.length > 2)
     {
       UmlModel model = XmlReader.ReadModel(args[0]);
@@ -26,14 +27,19 @@ public class TestApp
     else
     {
       Set<String> packages = XmlReader.AcquirePackages(args[0]);
-      System.out.print("[");
+      System.out.print("PACKAGES: [");
       String control = "";
       for(String s : packages)
       {
         System.out.print(control + "\'" + s + "\'");
         control = ",";
       }
-      System.out.print("]");
+      System.out.println("]");
+    }
+    }
+    catch (Exception e) {
+      System.out.println("ERROR: " + e.getMessage());
+      e.printStackTrace();
     }
   }
 }
